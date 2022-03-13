@@ -1,0 +1,279 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart'; // new
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naymat_khaana/app_classes/food_item.dart';
+import 'package:naymat_khaana/app_classes/user_account.dart';
+import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_bloc.dart';
+import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_event.dart';
+import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_state.dart';
+
+
+import 'home_page.dart';
+import 'login_page.dart'; // new
+// new
+//import 'package:provider/provider.dart';           // new
+
+
+class SubmitFoodItemPageParent extends StatelessWidget {
+  String title;
+  UserAccount useraccount;
+  SubmitFoodItemPageParent({required this.title, required this.useraccount});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SubmitFoodItemBloc(),
+      child: SubmitFoodItemPage(title: this.title, useraccount: this.useraccount),
+    );
+  }
+}
+
+// Define a custom Form widget.
+class SubmitFoodItemPage extends StatefulWidget {
+  //User user;
+  String title;
+  UserAccount useraccount;
+  SubmitFoodItemPage({required this.title, required this.useraccount});
+  @override
+  SubmitFoodItemPageState createState() {
+    return SubmitFoodItemPageState(title: this.title, useraccount: this.useraccount);
+  }
+}
+
+
+class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
+  //User user;
+  String title;
+  UserAccount useraccount;
+  SubmitFoodItemPageState({required this.title, required this.useraccount});
+  TextEditingController? inameController = TextEditingController();
+  //TextEditingController? unameController = TextEditingController();
+  TextEditingController? apriceController = TextEditingController();
+  TextEditingController? dpriceController = TextEditingController();
+  TextEditingController? sdateController = TextEditingController();
+  TextEditingController? edateController = TextEditingController();
+
+  String? valid_iname = null;
+  //String? valid_uname = null;
+  String? valid_aprice = null;
+  String? valid_dprice = null;
+  String? valid_sdate = null;
+  String? valid_edate = null;
+
+
+  DateTime selectedDate = DateTime.now();
+  SubmitFoodItemBloc? submitFoodItemBloc;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    submitFoodItemBloc = BlocProvider.of<SubmitFoodItemBloc>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(this.title),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              BlocListener<SubmitFoodItemBloc,SubmitFoodItemState>(
+                listener: (context,state){
+                  if (state is SubmissionSuccessful){
+                    final snackBar = SnackBar(
+                      content: const Text('Item is submitted.'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    navigateToHomePage(context, this.useraccount, );
+                  }
+                },
+                child: BlocBuilder<SubmitFoodItemBloc,SubmitFoodItemState>(
+                    builder: (context,state) {
+                      if (state is SubmitFoodInitialState){
+                        return buildInitialUI();
+                      }
+                      else if (state is SubmissionLoading) {
+                        return buildLoadingUI();
+                      }
+                      else if (state is SubmissionSuccessful) {
+                        return Container();
+                      }
+                      else if (state is SubmissionFailed) {
+                        return buildFailureUI(state.message);
+                      }
+                      else {return buildInitialUI();}
+                    }
+                ),
+              ),
+
+              TextField(
+                controller: inameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Food item name',
+                  errorText: valid_iname,
+                ),
+              ),
+
+              TextField(
+                controller: apriceController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Actual price',
+                  errorText: valid_aprice,
+                ),
+              ),
+
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: TextField(
+                  controller: dpriceController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Discount price',
+                    errorText: valid_dprice,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: TextField(
+                  controller: sdateController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Submission date',
+                    errorText: valid_sdate,
+                  ),
+                  onTap: () async {
+                    final DateTime picked = (await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime.now(), //.subtract(Duration(days: 1)),
+                        lastDate: DateTime(2101)))!;
+                    sdateController!.text = "${picked.toLocal()}".split(' ')[0];
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: TextField(
+                  controller: edateController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Expiration date',
+                    errorText: valid_edate,
+                  ),
+                  onTap: () async {
+                    final DateTime picked = (await showDatePicker(
+                        context: context,
+                        initialDate: sdateController!.text == ""? selectedDate:DateTime.parse(sdateController!.text) ,
+                        firstDate: sdateController!.text == ""?selectedDate:DateTime.parse(sdateController!.text), //DateTime(1900, 8),
+                        lastDate: DateTime(2101)))!;
+                    edateController!.text = "${picked.toLocal()}".split(' ')[0];
+                  },
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+                onPressed: () async {
+                  setState(() {
+
+                  valid_iname = validate_iname(inameController!.text);
+                 // valid_uname = validate_uname(unameController!.text);
+                  valid_aprice = validate_aprice(apriceController!.text);
+                  valid_dprice = validate_dprice(dpriceController!.text);
+                  valid_sdate = validate_sdate(sdateController!.text);
+                  valid_edate = validate_edate(edateController!.text);
+                  if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
+                    submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email) ));
+                }
+                  });},
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  String? validate_iname(String value) {
+      value = value == null? '':value;
+      if (value == '') {return 'Value Can\'t Be Empty'; }
+      else {  return null;}
+  }
+  // String? validate_uname(String value) {
+  //   value = value == null? '':value;
+  //   if (value == '') {return 'Value Can\'t Be Empty'; }
+  //   else {  return null;}
+  // }
+  String? validate_aprice(String value) {
+    value = value == null? '':value;
+    bool valid = RegExp(r"^[0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
+    var int_num = int.tryParse(value);
+    var double_num = double.tryParse(value);
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else if (int_num==null && double_num== null) {
+      return 'Invalid value';
+    }
+    else {  return null;}
+  }
+  String? validate_dprice(String value) {
+    value = value == null? '':value;
+    bool valid = RegExp(r"^[0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
+    var int_num = int.tryParse(value);
+    var double_num = double.tryParse(value);
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else if (int_num==null && double_num== null) {
+      return 'Invalid value';
+    }
+    else {  return null;}
+  }
+  String? validate_sdate(String value) {
+    value = value == null? '':value;
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else {  return null;}
+  }
+  String? validate_edate(String value) {
+    DateTime sd = DateTime.parse(sdateController!.text);
+    DateTime ed = DateTime.parse(edateController!.text);
+    final bool edBeforesd = ed.isBefore(sd);
+    value = value == null? '':value;
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else if (edBeforesd) {return 'Expiry date is before submission date';}
+    else {  return null;}
+  }
+
+
+
+
+  Widget buildInitialUI(){
+    return Container(); //Text('Waiting for Submission');
+  }
+  Widget buildLoadingUI(){
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+  Widget buildFailureUI(String message){
+    return Text(
+        message,
+        style: TextStyle(
+          color: Colors.red,
+        )
+    );
+  }
+
+  void navigateToHomePage(BuildContext context, UserAccount useraccount){
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
+        HomePageParent(title: 'Home', useraccount: useraccount)), (Route<dynamic> route) => false);
+  }
+
+}

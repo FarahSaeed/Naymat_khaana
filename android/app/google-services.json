@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "480003196149",
+    "project_id": "naymatkhaana-3cc9b",
+    "storage_bucket": "naymatkhaana-3cc9b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480003196149:android:0ec30d9d7ebce3f8c231bc",
+        "android_client_info": {
+          "package_name": "com.example.naymat_khaana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480003196149-h59360in1saug853lamddkp61sot15oc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqjmHT5u2i9fbQ_xLjqkYseern-U-TRBM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480003196149-h59360in1saug853lamddkp61sot15oc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

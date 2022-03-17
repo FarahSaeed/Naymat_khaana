@@ -33,3 +33,31 @@ class LoginFailed extends LoginState{
   // TODO: implement props
   List<Object?> get props => [];
 }
+
+
+
+
+
+
+class InitialGoogleLogoutLoading extends LoginState{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+
+class InitialGoogleLogoutSuccessful extends LoginState{
+
+  InitialGoogleLogoutSuccessful();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+
+class InitialGoogleLogoutFailed extends LoginState{
+  String message;
+  InitialGoogleLogoutFailed({required this.message});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}

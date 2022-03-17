@@ -9,13 +9,11 @@ import 'package:naymat_khaana/app_classes/user_account.dart';
 import 'package:naymat_khaana/blocs/loginBloc/login_bloc.dart';
 import 'package:naymat_khaana/blocs/loginBloc/login_event.dart';
 import 'package:naymat_khaana/blocs/loginBloc/login_state.dart';
+import 'package:naymat_khaana/custom_widgets/login_page_widgets.dart';
 import 'package:naymat_khaana/repositories/user_repository.dart';
 import 'package:naymat_khaana/ui/signup_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home_page.dart'; // new
-// new
-//import 'package:provider/provider.dart';           // new
-
 
 class LoginPageParent extends StatelessWidget {
   String title;
@@ -30,15 +28,12 @@ class LoginPageParent extends StatelessWidget {
   }
 }
 
-final _googleSignIn = GoogleSignIn(
-    scopes: ['email']
-);
+// final _googleSignIn = GoogleSignIn(
+//     scopes: ['email']
+// );
 // Define a custom Form widget.
 class LoginPage extends StatefulWidget {
   String title;
-
-
-
 
   LoginPage({required this.title});
 
@@ -62,16 +57,11 @@ class LoginPageState  extends State<LoginPage>{
 
   @override
   void initState(){
+    loginBloc = BlocProvider.of<LoginBloc>(context);
 
-    _googleSignIn.onCurrentUserChanged.listen((account) {
+    loginBloc!.add(InitialGoogleSignOutEvent());
 
-      setState(() {
-        _currentUser = account;
-      });
-
-    });
-    //_googleSignIn.signInSilently();
-signOut();
+    //signOut(); //_googleSignIn.signInSilently();
     super.initState();
   }
 
@@ -83,15 +73,11 @@ signOut();
 
   @override
   Widget build(BuildContext context) {
-
     GoogleSignInAccount? user = _currentUser;
-
-    loginBloc = BlocProvider.of<LoginBloc>(context);
+    // loginBloc = BlocProvider.of<LoginBloc>(context);
     // TODO: implement build
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.title),
-      //
+
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.green,
       body: SingleChildScrollView(
@@ -105,58 +91,18 @@ signOut();
               Column(
                 children: [
                   Text('Google user is signed in!'),
-                  ElevatedButton(onPressed: signOut, child: Text('Sign out'))
+                  ElevatedButton(onPressed: (){
+                    loginBloc!.add(InitialGoogleSignOutEvent());
+
+                  }, child: Text('Sign out'))
                 ],
               ):Container(),
               Column (
                 //  mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
           children:[
-
             /////////////////////////////////////////////////////////////////////////////////////////
-
-
-            ElevatedButton(onPressed: (){
-
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text('TextField in Dialog'),
-                    content: TextField(
-                     controller: googleemailController,
-                      decoration: InputDecoration(hintText: "Text Field in Dialog"),
-                    ),
-                    actions: <Widget>[
-                      ElevatedButton(
-                        child: Text('CANCEL'),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ElevatedButton(
-                        child: Text('OK'),
-                        onPressed: () async {
-                         // print(_textFieldController.text);
-                          bool ue = await userRepository!.UserExist(googleemailController!.text);
-                          if (ue == true)
-                          {
-                            SignIn();
-                          }
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-
-
-            }, child: Text('Sign in through Google')),
-              ///////////////////////////////////////////////////////////////////////////////////////
-
               Container(
-                //margin: EdgeInsets.symmetric(horizontal: 4, vertical: 200),
                 margin: const EdgeInsets.only(top: 200.0),
                 padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                 decoration: BoxDecoration(
@@ -169,13 +115,10 @@ signOut();
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(15),),
-                // padding: EdgeInsets.all(50),
-                // alignment: Alignment.center,
+
                 child: Text(
                   "Naymat Khaana",
                   textAlign: TextAlign.center,
-                    // kalam sriracha italianno
-                    // style: TextStyle(fontSize: 20, color: Colors.green, fontWeight: FontWeight.bold, fontFamily: 'Road Rage')
                     style: GoogleFonts.kalam(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold, ),
                 ),
               ),
@@ -199,6 +142,12 @@ signOut();
                       else if (state is LoginFailed) {
                         return buildFailureUI(state.message);
                       }
+                      else if (state is InitialGoogleLogoutSuccessful) {
+                        return Container();
+                      }
+                      else if (state is InitialGoogleLogoutFailed) {
+                        return buildFailureUI(state.message);
+                      }
                       else {return buildInitialUI();}
                     }
                 ),
@@ -206,114 +155,26 @@ signOut();
             Container(
               margin: const EdgeInsets.only(top: 80.0),
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: TextField(
-                style: TextStyle(color: Colors.white),
-                textInputAction: TextInputAction.next,
-              controller: emailController,
-              decoration: InputDecoration( //0xFF47A54B FF449E48 0xFF3E8E42
-                fillColor:  Color(0xFF3F9243), //Color(0xFF47A54B),//Colors.green,//Color(0xFF16B617), //Color(0xFF16B617), //0xFFC8ECC9
-                filled:true,
-                //border: OutlineInputBorder(),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF5ABF63), width: 3),
-                ),
-                focusedBorder: UnderlineInputBorder(//0xFF52C45B
-                  borderSide: BorderSide(color: Colors.white, width: 3),
-                ),
-                hintText: 'Email',
-                errorText: valid_email,//validate_email(emailController!.text),
-              ),
-
+              child: LoginInputTextField(
+                controller: emailController,
+                hintText: "Email",
+                errorText: valid_email,
+                isPassword: false,
               ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 10.0),
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: TextField(
-                style: TextStyle(color: Colors.white),
-                textInputAction: TextInputAction.done,
-              obscureText: true,
-
-              enableSuggestions: false,
-              autocorrect: false,
-              controller: passwordController,
-              decoration: InputDecoration(
-                suffix: InkWell(
-                  onTap: _togglePasswordView,
-                  child: Icon(
-                    _isHidden
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Color(0xFF2E6831),
-
-                  ),
-                ),
-              //  decoration: InputDecoration( //0xFF47A54B FF449E48 0xFF3E8E42
-                  fillColor:  Color(0xFF3F9243), //Color(0xFF47A54B),//Colors.green,//Color(0xFF16B617), //Color(0xFF16B617), //0xFFC8ECC9
-                  filled:true,
-                  //border: OutlineInputBorder(),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF5ABF63), width: 3),
-                  ),
-                  focusedBorder: UnderlineInputBorder(//0xFF52C45B
-                    borderSide: BorderSide(color: Colors.white, width: 3),
-                  ),
-
-                  //border: OutlineInputBorder(),
-                hintText: 'Password',
-                errorText: valid_pass, //validate_password(passwordController!.text),
-              ),
-                onSubmitted: (term){
-                  login();
-                },
+              child:
+              LoginInputTextField(
+                controller: passwordController,
+                hintText: "Password",
+                errorText: valid_pass,
+                isPassword: true,
               ),
             ),
-
-            Container(
-              height: 50,
-              decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
-              ],
-              // boxShadow: [
-              //   BoxShadow(
-              //       color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
-              // ],
-              borderRadius: BorderRadius.circular(5),
-              gradient: LinearGradient(
-               // begin: Alignment.topLeft,
-                //end: Alignment.bottomRight,
-                stops: [0.1, 0.5, 1.0],
-               // stops: [0.1, 0.5, 1.0],
-                colors: [
-                  Colors.white30,
-                 Colors.white,
-                  Colors.white30,
-                  //Colors.white10,
-                 // Colors.white30,
-                ],
-              ),
-              //   color: Colors.deepPurple.shade300,
-              //   borderRadius: BorderRadius.circular(20),
-              ),
-              // decoration: BoxDecoration(
-              //   borderRadius:BorderRadius.circular(100),
-              // ),
-             // crossAxisAlignment: CrossAxisAlignment.stretch
-              //alignment: Alignment.centerRight,
-              margin: const EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
-
-
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-              child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 20),
-                  primary: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  onPrimary: Colors.green
-              ),
-              //
+            LoginButton(
+              buttonText: "Login",
               onPressed: () async {
                 setState(() {
                   valid_email = validate_email(emailController!.text);
@@ -323,44 +184,75 @@ signOut();
                   }
                 });
               },
-              child: const Text('Log in'),
-              ),
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 1.0),
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-              child: TextButton(
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              ),
+            LoginTextButton(
+              buttonText: "Sign up",
               onPressed: () {navigateToSignupPage(context); },
-              child: Text('Sign up'),
-              ),
+            ),
+            LoginTextButton(
+              buttonText: "Sign in through google",
+              onPressed: (){
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Gmail address'),
+                      content: TextField(
+                        controller: googleemailController,
+                        decoration: InputDecoration(hintText: "Text Field in Dialog"),
+                      ),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          child: Text('CANCEL'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ElevatedButton(
+                          child: Text('OK'),
+                          onPressed: () async {
+                            // print(_textFieldController.text);
+                            bool ue = await userRepository!.UserExist(googleemailController!.text);
+                            if (ue == true)
+                            {
+                              //SignIn();
+                              loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
+                              // LoginGoogleSignInEvent
+                            }
+                            else
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('problem while logging in')));
+
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
             )
           ],),
-
             ],
           ),
       ),
     );
   }
 
-  void signOut(){
-    _googleSignIn.disconnect();
-  }
+  // void signOut(){
+  //   _googleSignIn.disconnect();
+  // }
 
-  Future<void> SignIn() async{
-    try{
-      await _googleSignIn.signIn();
-      setState(() {
-        loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
-      });
-
-    }
-    catch(e){
-      print('error signing in due to: $e');
-    }
-  }
+  // Future<void> SignIn() async{
+  //   try{
+  //     await _googleSignIn.signIn();
+  //     setState(() {
+  //       loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
+  //     });
+  //   }
+  //   catch(e){
+  //     print('error signing in due to: $e');
+  //   }
+  // }
 
   String? validate_email(String value) {
     _counter++;
@@ -372,7 +264,6 @@ signOut();
     else {  return null;}
     }
     else {
-
       return null;
     }
   }
@@ -391,13 +282,11 @@ signOut();
 
 
   Widget buildInitialUI(){
-    return Container(); //Text('Waiting for User login');
+    return Container();
   }
   Widget buildLoadingUI(){
     return Center(
-      // child: CircularProgressIndicator(),
       child:             LinearProgressIndicator(
-        // value: controller.value,
         semanticsLabel: 'Linear progress indicator',
       ),
     );

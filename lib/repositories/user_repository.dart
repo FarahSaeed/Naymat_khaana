@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:naymat_khaana/app_classes/user_account.dart';
 
 class UserRepository{
@@ -9,10 +10,18 @@ class UserRepository{
 FirebaseAuth? firebaseAuth;
 CollectionReference? users;
 
+////// for google sign in
+final googleSignIn = GoogleSignIn(
+    scopes: ['email']
+);
+GoogleSignInAccount? _currentUser;
+
 
 UserRepository() {
    this.firebaseAuth = FirebaseAuth.instance; // initializing in initializer list
    this.users = FirebaseFirestore.instance.collection('users');
+   // google sign in
+   googleSignIn.onCurrentUserChanged.listen((account) {_currentUser = account;});
 }
 
 
@@ -43,7 +52,10 @@ Future<UserAccount?> createUser(String fname, String lname, String dob, String e
 }
 
 Future<UserAccount?> getUser(String email1) async{
+
    try{
+      await googleSignIn.signIn();
+
       QuerySnapshot userList = await  users!.where("email", isEqualTo: email1).get(); //users!.where('email', arrayContainsAny: [email1]).get();
       QueryDocumentSnapshot doc=userList.docs[0];
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -57,6 +69,7 @@ Future<UserAccount?> getUser(String email1) async{
       return userAccount; //result.user;
    }
    on PlatformException catch(e) {
+      googleSignIn.disconnect(); // if exeception thrown then google sign out
       throw Exception(e.toString());
    }
 }
@@ -98,6 +111,7 @@ Future<UserAccount?> signInUser(String email1, String password) async{
 
 Future<void> signOut() async{
    await firebaseAuth!.signOut();
+   if (_currentUser != null) {}
 }
 
 Future<bool> isSignedIn() async{

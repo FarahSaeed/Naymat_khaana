@@ -26,3 +26,19 @@ class LoginGoogleSignInEvent extends LoginEvent{
   // TODO: implement props
   List<Object?> get props => [];
 }
+
+class LoginGoogleSignOutEvent extends LoginEvent{
+  LoginGoogleSignOutEvent();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+
+class InitialGoogleSignOutEvent extends LoginEvent{
+  InitialGoogleSignOutEvent();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}

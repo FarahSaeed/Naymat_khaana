@@ -8,6 +8,7 @@ import 'package:naymat_khaana/app_classes/user_account.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_bloc.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_event.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_state.dart';
+import 'package:naymat_khaana/custom_widgets/signup_page_widgets.dart';
 
 import 'home_page.dart';
 import 'login_page.dart'; // new
@@ -130,7 +131,6 @@ class SignupPageState extends State<SignupPage> {
                     }
                 ),
               ),
-             // SizedBox(height: 50),
               Container(
                 margin: const EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
 
@@ -140,7 +140,6 @@ class SignupPageState extends State<SignupPage> {
 
                   children: [
                     Text(
-
                       "Create Account",
                       style: TextStyle(fontSize: 27, color: Colors.green, fontWeight: FontWeight.bold, fontFamily: 'Road Rage'),
                     ),
@@ -157,25 +156,30 @@ class SignupPageState extends State<SignupPage> {
               Container(
                 alignment: AlignmentDirectional.center,
                 margin: const EdgeInsets.only(top: 30.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  controller: fnameController,
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                  ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                      ),
-                      labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
-                    labelText: 'First name',
-                    errorText:  valid_fname,
-
-                   floatingLabelBehavior:
-                      FloatingLabelBehavior.auto,
-                    //floatingLabelStyle: TextStyle(color: Colors.blue),
-                  ),
-                ),
+                child: SignupInputTextField(
+                  labelText: 'First name',
+                  errorText:  valid_fname,
+                  inputTextController: fnameController!
+                )
+                // child: TextField(
+                //   textInputAction: TextInputAction.next,
+                //   controller: fnameController,
+                //   decoration: InputDecoration(
+                //       enabledBorder: OutlineInputBorder(
+                //     borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //   ),
+                //       focusedBorder: OutlineInputBorder(
+                //         borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //       ),
+                //       labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
+                //     labelText: 'First name',
+                //     errorText:  valid_fname,
+                //
+                //    floatingLabelBehavior:
+                //       FloatingLabelBehavior.auto,
+                //     //floatingLabelStyle: TextStyle(color: Colors.blue),
+                //   ),
+                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),

@@ -34,6 +34,7 @@ class LoginBloc extends Bloc<LoginEvent,LoginState>{
     if (event is LoginGoogleSignInEvent){
       try {
         yield LoginLoading();
+
         UserAccount useraccount1 = (await userRepository!.getUser(event.email))!;
         yield LoginSuccessful(useraccount:useraccount1);
       } on Exception catch (e) {
@@ -41,6 +42,18 @@ class LoginBloc extends Bloc<LoginEvent,LoginState>{
         yield LoginFailed(message: e.toString());
       }
     }
+
+    if (event is InitialGoogleSignOutEvent){
+      try {
+        yield InitialGoogleLogoutLoading();
+        userRepository!.googleSignIn.disconnect();
+        yield InitialGoogleLogoutSuccessful();
+      } on Exception catch (e) {
+        // TODO
+        yield InitialGoogleLogoutFailed(message: e.toString());
+      }
+    }
+
 
   }
 }

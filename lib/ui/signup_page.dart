@@ -183,137 +183,167 @@ class SignupPageState extends State<SignupPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  controller: lnameController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
-                   // border: OutlineInputBorder(),
-                    labelText: 'Last name',
-                    errorText: valid_lname,
-                  ),
-                 // textInputAction: TextInputAction.next,
-                ),
+                child: SignupInputTextField(
+                  labelText: 'Last name',
+                  errorText:  valid_lname,
+                  inputTextController: lnameController!
+              ),
+                // TextField(
+                //   textInputAction: TextInputAction.next,
+                //   controller: lnameController,
+                //   decoration: InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
+                //    // border: OutlineInputBorder(),
+                //     labelText: 'Last name',
+                //     errorText: valid_lname,
+                //   ),
+                //  // textInputAction: TextInputAction.next,
+                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-
-                  controller: dobController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
+                child: SignupInputTextField(
                     labelText: 'Date of birth',
-                    errorText: valid_dob,
-                  ),
-                focusNode: _focusNode,
-
-                // onTap: () async {
-                //     final DateTime picked = (await showDatePicker(
-                //     context: context,
-                //     initialDate: selectedDate,
-                //     firstDate: DateTime(1900, 8),
-                //     lastDate: DateTime(2101)))!;
-                //     dobController!.text = "${picked.toLocal()}".split(' ')[0];
-                //     FocusScope.of(context).nextFocus();
-                // },
+                    errorText:  valid_dob,
+                    inputTextController: dobController!,
+                    focusNode: _focusNode,
                 ),
+                // child: TextField(
+                //   textInputAction: TextInputAction.next,
+                //   controller: dobController,
+                //   decoration: InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
+                //     labelText: 'Date of birth',
+                //     errorText: valid_dob,
+                //   ),
+                // focusNode: _focusNode,
+                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle: TextStyle( color: Color(0xFFCFE0BC)),                    labelText: 'Email',
-                    errorText: valid_email,
-                  ),
+                child:
+                SignupInputTextField(
+                    labelText: 'Email',
+                    errorText:  valid_email,
+                    inputTextController: emailController!
                 ),
+                // TextField(
+                //   textInputAction: TextInputAction.next,
+                //   controller: emailController,
+                //   decoration: InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
+                //     labelText: 'Email',
+                //     errorText: valid_email,
+                //   ),
+                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  obscureText: true,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  controller: passwordController,
-                  decoration: InputDecoration(                    enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                  ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
+                child:
+                SignupInputTextField(
                     labelText: 'Password',
-                    errorText: valid_pass,
-                  ),
+                    errorText:  valid_pass,
+                    inputTextController: passwordController!
                 ),
+                // TextField(
+                //   textInputAction: TextInputAction.next,
+                //   obscureText: true,
+                //   enableSuggestions: false,
+                //   autocorrect: false,
+                //   controller: passwordController,
+                //   decoration: InputDecoration(                    enabledBorder: OutlineInputBorder(
+                //     borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //   ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
+                //     labelText: 'Password',
+                //     errorText: valid_pass,
+                //   ),
+                // ),
               ),
-              Container(
-                height: 45,
-                width: double.infinity,
-                margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
-                  ],
-                  borderRadius: BorderRadius.circular(5),
-                  gradient: LinearGradient(
-                    stops: [0.1, 0.5, 1.0],
-                    colors: [
-                      Colors.green,
-                    Colors.lightGreen,
-                      Colors.green,
-                    ],
-                  ),
-                ),
+              SignupButtonField(
+                buttonText: 'Sign up',
+                onPressed: () async {
+                        setState(() {
+                          valid_fname = validate_fname(fnameController!.text);
+                          valid_lname = validate_lname(lnameController!.text);
+                          valid_dob = validate_dob(dobController!.text);
+                          valid_email = validate_email(emailController!.text);
+                          //valid_uname = validate_uname(unameController!.text);
+                          valid_pass = validate_pass(passwordController!.text);
 
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
-                    primary: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-
-                  onPressed: () async {
-                    setState(() {
-                      valid_fname = validate_fname(fnameController!.text);
-                      valid_lname = validate_lname(lnameController!.text);
-                      valid_dob = validate_dob(dobController!.text);
-                      valid_email = validate_email(emailController!.text);
-                      //valid_uname = validate_uname(unameController!.text);
-                      valid_pass = validate_pass(passwordController!.text);
-
-                      if (valid_fname == null && valid_lname == null && valid_dob == null && valid_email == null  && valid_pass == null ){
-                        userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: 'na', password: passwordController!.text));
-                      }
-                    });
-                    },
-                  // onPressed: () async {
-                  //   userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: unameController!.text, password: passwordController!.text));
-                  // },
-                  child: const Text('Sign up'),
-                ),
+                          if (valid_fname == null && valid_lname == null && valid_dob == null && valid_email == null  && valid_pass == null ){
+                            userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: 'na', password: passwordController!.text));
+                          }
+                        });
+                        },
               ),
+              // Container(
+              //   height: 45,
+              //   width: double.infinity,
+              //   margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
+              //   decoration: BoxDecoration(
+              //     boxShadow: [
+              //       BoxShadow(
+              //           color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
+              //     ],
+              //     borderRadius: BorderRadius.circular(5),
+              //     gradient: LinearGradient(
+              //       stops: [0.1, 0.5, 1.0],
+              //       colors: [
+              //         Colors.green,
+              //         Colors.lightGreen,
+              //         Colors.green,
+              //       ],
+              //     ),
+              //   ),
+              //
+              //   child: ElevatedButton(
+              //     style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
+              //       primary: Colors.transparent,
+              //       shadowColor: Colors.transparent,
+              //     ),
+              //
+              //     onPressed: () async {
+              //       setState(() {
+              //         valid_fname = validate_fname(fnameController!.text);
+              //         valid_lname = validate_lname(lnameController!.text);
+              //         valid_dob = validate_dob(dobController!.text);
+              //         valid_email = validate_email(emailController!.text);
+              //         //valid_uname = validate_uname(unameController!.text);
+              //         valid_pass = validate_pass(passwordController!.text);
+              //
+              //         if (valid_fname == null && valid_lname == null && valid_dob == null && valid_email == null  && valid_pass == null ){
+              //           userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: 'na', password: passwordController!.text));
+              //         }
+              //       });
+              //       },
+              //     // onPressed: () async {
+              //     //   userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: unameController!.text, password: passwordController!.text));
+              //     // },
+              //     child: const Text('Sign up'),
+              //   ),
+              // ),
               Container(
                 alignment: AlignmentDirectional.center,
                 margin: const EdgeInsets.only(top: 20.0, bottom: 10.0, left: 20.0, right: 20.0),

@@ -18,6 +18,7 @@ import 'package:naymat_khaana/blocs/homePageBloc/home_page_state.dart';
 import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_bloc.dart';
 import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_event.dart';
 import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_state.dart';
+import 'package:naymat_khaana/custom_widgets/submit_page_widgets.dart';
 
 
 import 'basket_page.dart';
@@ -316,45 +317,40 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
               Container(
                 alignment: AlignmentDirectional.center,
                 margin: const EdgeInsets.only(top: 30.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  controller: inameController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
-                    alignLabelWithHint: true,
-                    //border: OutlineInputBorder(),
-                    //border: OutlineInputBorder(),
+                child:
+                  SubmitInputTextField(
                     labelText: 'Food item name',
                     errorText: valid_iname,
+                    inputTextController: inameController,
                   ),
-                ),
+                // TextField(
+                //   textInputAction: TextInputAction.next,
+                //   controller: inameController,
+                //   decoration: InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
+                //     alignLabelWithHint: true,
+                //     //border: OutlineInputBorder(),
+                //     //border: OutlineInputBorder(),
+                //     labelText: 'Food item name',
+                //     errorText: valid_iname,
+                //   ),
+                // ),
               ),
 
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
+                child:
+                SubmitInputTextField(
+                  labelText: 'Actual price',
+                  errorText: valid_aprice,
+                  inputTextController: apriceController,
                   focusNode: _focusNodeAprice,
-                  textInputAction: TextInputAction.next,
-                  controller: apriceController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
-                    alignLabelWithHint: true,
-                    labelText: 'Actual price',
-                    errorText: valid_aprice,
-                  ),
                     onSubmitted: (String str) {
 
                       if ( apriceController!.text !=null && apriceController!.text !="" && dpriceController!.text !=null && dpriceController!.text !=""){
@@ -368,21 +364,17 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: ()
-                              { Navigator.pop(context, 'Update Actual price');
-
-                              //FocusScope.of(context).requestFocus( _focusNodeAprice);
-                             //_focusNodeAprice!.requestFocus();
-
-                              },
+                                  { Navigator.pop(context, 'Update Actual price');
+                                  },
                                   child: const Text('Update Actual price'),
                                 ),
                                 TextButton(
                                   onPressed: (){
                                     Navigator.pop(context, 'Update Discounted price');
-                                  _focusNodeAprice!.unfocus();
-                                  _focusNodeDprice!.requestFocus();
-                                  //setFocusDprice();
-                                  //FocusScope.of(context).requestFocus( _focusNodeDprice);
+                                    _focusNodeAprice!.unfocus();
+                                    _focusNodeDprice!.requestFocus();
+                                    //setFocusDprice();
+                                    //FocusScope.of(context).requestFocus( _focusNodeDprice);
                                   },
                                   child: const Text('Update Discounted price'),
                                 ),
@@ -399,6 +391,67 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                       //FocusScope.of(context).requestFocus( _focusNodeSdate,);
                     }
                 ),
+                // TextField(
+                //   focusNode: _focusNodeAprice,
+                //   textInputAction: TextInputAction.next,
+                //   controller: apriceController,
+                //   keyboardType: TextInputType.number,
+                //   decoration: InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
+                //     alignLabelWithHint: true,
+                //     labelText: 'Actual price',
+                //     errorText: valid_aprice,
+                //   ),
+                //     onSubmitted: (String str) {
+                //
+                //       if ( apriceController!.text !=null && apriceController!.text !="" && dpriceController!.text !=null && dpriceController!.text !=""){
+                //         if (double.parse(apriceController!.text) <= double.parse(dpriceController!.text))
+                //         {
+                //           showDialog<String>(
+                //             context: context,
+                //             builder: (BuildContext context) => AlertDialog(
+                //               title: const Text('Invalid price'),
+                //               content: const Text('Actual price should be higher than discounted price.'),
+                //               actions: <Widget>[
+                //                 TextButton(
+                //                   onPressed: ()
+                //               { Navigator.pop(context, 'Update Actual price');
+                //
+                //               //FocusScope.of(context).requestFocus( _focusNodeAprice);
+                //              //_focusNodeAprice!.requestFocus();
+                //
+                //               },
+                //                   child: const Text('Update Actual price'),
+                //                 ),
+                //                 TextButton(
+                //                   onPressed: (){
+                //                     Navigator.pop(context, 'Update Discounted price');
+                //                   _focusNodeAprice!.unfocus();
+                //                   _focusNodeDprice!.requestFocus();
+                //                   //setFocusDprice();
+                //                   //FocusScope.of(context).requestFocus( _focusNodeDprice);
+                //                   },
+                //                   child: const Text('Update Discounted price'),
+                //                 ),
+                //               ],
+                //             ),
+                //           );
+                //           FocusScope.of(context).requestFocus( _focusNodeAprice,);
+                //           //  FocusScope.of(context).requestFocus( _focusNodeSdate);
+                //         }
+                //         else FocusScope.of(context).requestFocus( _focusNodeDprice); // _focusNodeAprice!.nextFocus();
+                //
+                //       }
+                //       else FocusScope.of(context).requestFocus( _focusNodeDprice); //_focusNodeAprice!.nextFocus();
+                //       //FocusScope.of(context).requestFocus( _focusNodeSdate,);
+                //     }
+                // ),
               ),
 
               Container(

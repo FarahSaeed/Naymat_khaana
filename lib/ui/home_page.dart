@@ -273,7 +273,8 @@ class HomePage extends StatelessWidget {
                           child: Wrap(
                             runSpacing: 10,
                             spacing: 10,
-                            children: [ Container(
+                            children: [
+                              Container(
                               //clipBehavior: Clip.hardEdge,
                               height: 100,
                               width: 100,

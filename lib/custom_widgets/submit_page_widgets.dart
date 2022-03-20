@@ -9,10 +9,11 @@ class SubmitInputTextField extends StatefulWidget {
   SubmitInputTextField({
     Key? key,
     required this.labelText,
-    this.errorText,
-    this.inputTextController,
+    required this.errorText,
+    required this.inputTextController,
     this.focusNode,
-    this.onSubmitted
+    this.onSubmitted,
+    this.onTap
   }) : super(key: key);
 
   String labelText;
@@ -20,6 +21,7 @@ class SubmitInputTextField extends StatefulWidget {
   FocusNode? focusNode;
   TextEditingController? inputTextController;
   void Function(String)? onSubmitted;
+  void Function()? onTap;
   @override
   SubmitInputTextFieldState createState() {
     return SubmitInputTextFieldState();
@@ -46,9 +48,70 @@ class SubmitInputTextFieldState  extends State<SubmitInputTextField>{
         errorText: widget.errorText,
       ),
       onSubmitted: widget.onSubmitted,
+      onTap: widget.onTap
     );
   }
 }
 //////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// SubmitInputTextField ////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// SubmitButtonField ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+class SubmitButtonField extends StatefulWidget {
+  SubmitButtonField({
+    Key? key,
+    required this.buttonText,
+    this.onPressed
+  }) : super(key: key);
+
+  String buttonText;
+  void Function()? onPressed;
+
+  @override
+  SubmitButtonFieldState createState() {
+    return SubmitButtonFieldState();
+  }
+}
+class SubmitButtonFieldState  extends State<SubmitButtonField>{
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 45,
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
+          ],
+          borderRadius: BorderRadius.circular(5),
+          gradient: LinearGradient(
+            stops: [0.1, 0.5, 1.0],
+            colors: [
+              Colors.green,
+              Colors.lightGreen,
+              Colors.green,
+            ],
+          ),
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
+            primary: Colors.transparent,
+            shadowColor: Colors.transparent,
+          ),
+          onPressed: widget.onPressed,
+          child: Text(widget.buttonText),
+        ),
+      );
+  }
+}
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// SubmitButtonField //////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+
+

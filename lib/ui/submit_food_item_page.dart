@@ -457,128 +457,130 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
 
-                // child: FocusScope(
-                //   canRequestFocus: true,
-                //
-                //   child: Focus(
-                //     focusNode: _focusNodeSdate,
-                //     canRequestFocus: true,
-                //     onFocusChange: (focus) {
-                //
-                //       if (!focus && apriceController!.text !=null && apriceController!.text !="" && dpriceController!.text !=null && dpriceController!.text !=""){
-                //         if (double.parse(apriceController!.text) < double.parse(dpriceController!.text))
-                //         {
-                //           showDialog<String>(
-                //             context: context,
-                //             builder: (BuildContext context) => AlertDialog(
-                //               title: const Text('AlertDialog Title'),
-                //               content: const Text('AlertDialog description'),
-                //               actions: <Widget>[
-                //                 TextButton(
-                //                   onPressed: () => Navigator.pop(context, 'Cancel'),
-                //                   child: const Text('Cancel'),
-                //                 ),
-                //                 TextButton(
-                //                   onPressed: (){ Navigator.pop(context, 'OK');
-                //                   FocusScope.of(context).requestFocus( _focusNodeSdate);
-                //
-                //                   },
-                //                   child: const Text('OK'),
-                //                 ),
-                //               ],
-                //             ),
-                //           );
-                //        //  FocusScope.of(context).requestFocus( _focusNodeSdate);
-                //         }
-                //
-                //       }
-                //       //print("fffffffffffffffffffffffffffocus: $focus");
-                //       },
-                    child: TextField(
-                     focusNode: _focusNodeDprice,
-                     // textInputAction: TextInputAction.next,
-                      controller: dpriceController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                        ),
-                        labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
-                        alignLabelWithHint: true,
-                      //  border: OutlineInputBorder(),
-                        labelText: 'Discount price',
-                        errorText: valid_dprice,
-                      ),
+                    child:
+
+                    SubmitInputTextField(
+                      labelText: 'Discount price',
+                      errorText: valid_dprice,
+                      inputTextController: dpriceController,
+                      focusNode: _focusNodeDprice,
                         onSubmitted: (String str) {
 
-                                if ( apriceController!.text !=null && apriceController!.text !="" && dpriceController!.text !=null && dpriceController!.text !=""){
-                                  if (double.parse(apriceController!.text) <= double.parse(dpriceController!.text))
-                                  {
-                                    showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) => AlertDialog(
-                                        title: const Text('Invalid price'),
-                                        content: const Text('Discounted price should be less than actual price.'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: ()
-                                            { Navigator.pop(context, 'Update Actual price');
-                                           // _focusNodeDprice!.unfocus();
-                                            //_focusNodeAprice!.unfocus();
-                                            _focusNodeDprice!.unfocus();
-                                            _focusNodeAprice!.requestFocus();
-                                            //FocusScope.of(context).requestFocus( _focusNodeAprice);
-                                            },
-                                            child: const Text('Update Actual price'),
-                                          ),
-                                          TextButton(
-                                            onPressed: (){ Navigator.pop(context, 'Update Discounted price');
-                                            //_focusNodeAprice!.unfocus();
-                                            //_focusNodeDprice!.requestFocus();
-                                            //FocusScope.of(context).requestFocus( _focusNodeDprice);
-                                            },
-                                            child: const Text('Update Discounted price'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                    FocusScope.of(context).requestFocus( _focusNodeDprice,);
-                                 //  FocusScope.of(context).requestFocus( _focusNodeSdate);
-                                  }
-                                  else _focusNodeDprice!.unfocus();
+                          if ( apriceController!.text !=null && apriceController!.text !="" && dpriceController!.text !=null && dpriceController!.text !=""){
+                            if (double.parse(apriceController!.text) <= double.parse(dpriceController!.text))
+                            {
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Invalid price'),
+                                  content: const Text('Discounted price should be less than actual price.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: ()
+                                      { Navigator.pop(context, 'Update Actual price');
+                                      // _focusNodeDprice!.unfocus();
+                                      //_focusNodeAprice!.unfocus();
+                                      _focusNodeDprice!.unfocus();
+                                      _focusNodeAprice!.requestFocus();
+                                        //FocusScope.of(context).requestFocus( _focusNodeAprice);
+                                      },
+                                      child: const Text('Update Actual price'),
+                                    ),
+                                    TextButton(
+                                      onPressed: (){ Navigator.pop(context, 'Update Discounted price');
+                                        //_focusNodeAprice!.unfocus();
+                                        //_focusNodeDprice!.requestFocus();
+                                        //FocusScope.of(context).requestFocus( _focusNodeDprice);
+                                      },
+                                      child: const Text('Update Discounted price'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              FocusScope.of(context).requestFocus( _focusNodeDprice,);
+                              //  FocusScope.of(context).requestFocus( _focusNodeSdate);
+                            }
+                            else _focusNodeDprice!.unfocus();
 
-                                }
-                                else _focusNodeDprice!.unfocus();
+                          }
+                          else _focusNodeDprice!.unfocus();
                           //FocusScope.of(context).requestFocus( _focusNodeSdate,);
                         }
                     ),
+
+                    // TextField(
+                    //  focusNode: _focusNodeDprice,
+                    //  // textInputAction: TextInputAction.next,
+                    //   controller: dpriceController,
+                    //   keyboardType: TextInputType.number,
+                    //   decoration: InputDecoration(
+                    //     enabledBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                    //     ),
+                    //     focusedBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                    //     ),
+                    //     labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
+                    //     alignLabelWithHint: true,
+                    //   //  border: OutlineInputBorder(),
+                    //     labelText: 'Discount price',
+                    //     errorText: valid_dprice,
+                    //   ),
+                    //     onSubmitted: (String str) {
+                    //
+                    //             if ( apriceController!.text !=null && apriceController!.text !="" && dpriceController!.text !=null && dpriceController!.text !=""){
+                    //               if (double.parse(apriceController!.text) <= double.parse(dpriceController!.text))
+                    //               {
+                    //                 showDialog<String>(
+                    //                   context: context,
+                    //                   builder: (BuildContext context) => AlertDialog(
+                    //                     title: const Text('Invalid price'),
+                    //                     content: const Text('Discounted price should be less than actual price.'),
+                    //                     actions: <Widget>[
+                    //                       TextButton(
+                    //                         onPressed: ()
+                    //                         { Navigator.pop(context, 'Update Actual price');
+                    //                        // _focusNodeDprice!.unfocus();
+                    //                         //_focusNodeAprice!.unfocus();
+                    //                         _focusNodeDprice!.unfocus();
+                    //                         _focusNodeAprice!.requestFocus();
+                    //                         //FocusScope.of(context).requestFocus( _focusNodeAprice);
+                    //                         },
+                    //                         child: const Text('Update Actual price'),
+                    //                       ),
+                    //                       TextButton(
+                    //                         onPressed: (){ Navigator.pop(context, 'Update Discounted price');
+                    //                         //_focusNodeAprice!.unfocus();
+                    //                         //_focusNodeDprice!.requestFocus();
+                    //                         //FocusScope.of(context).requestFocus( _focusNodeDprice);
+                    //                         },
+                    //                         child: const Text('Update Discounted price'),
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                 );
+                    //                 FocusScope.of(context).requestFocus( _focusNodeDprice,);
+                    //              //  FocusScope.of(context).requestFocus( _focusNodeSdate);
+                    //               }
+                    //               else _focusNodeDprice!.unfocus();
+                    //
+                    //             }
+                    //             else _focusNodeDprice!.unfocus();
+                    //       //FocusScope.of(context).requestFocus( _focusNodeSdate,);
+                    //     }
+                    // ),
                 //   ),
                 // ),
               ),
 
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
-                 // focusNode: _focusNodeSdate,
-                  textInputAction: TextInputAction.next,
-                  controller: sdateController,
-                  keyboardType: TextInputType.none,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
-                    alignLabelWithHint: true,
-                    //border: OutlineInputBorder(),
-                    labelText: 'Submission date',
-                    errorText: valid_sdate,
-                  ),
+                child:
+
+                SubmitInputTextField(
+                  labelText: 'Submission date',
+                  errorText: valid_sdate,
+                  inputTextController: sdateController,
                   onTap: () async {
                     DateTime? picked = (await showDatePicker(
                         helpText: "Selection date",
@@ -589,39 +591,84 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                     sdateController!.text = (picked == null)?"": "${picked.toLocal()}".split(' ')[0];
                   },
                 ),
+                // TextField(
+                //  // focusNode: _focusNodeSdate,
+                //   textInputAction: TextInputAction.next,
+                //   controller: sdateController,
+                //   keyboardType: TextInputType.none,
+                //   decoration: InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
+                //     alignLabelWithHint: true,
+                //     //border: OutlineInputBorder(),
+                //     labelText: 'Submission date',
+                //     errorText: valid_sdate,
+                //   ),
+                //   onTap: () async {
+                //     DateTime? picked = (await showDatePicker(
+                //         helpText: "Selection date",
+                //         context: context,
+                //         initialDate: selectedDate,
+                //         firstDate: DateTime.now(), //.subtract(Duration(days: 1)),
+                //         lastDate: DateTime(2101)));
+                //     sdateController!.text = (picked == null)?"": "${picked.toLocal()}".split(' ')[0];
+                //   },
+                // ),
               ),
 
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
-                child: TextField(
-                 // focusNode: _focusNodeEdate,
-                  textInputAction: TextInputAction.next,
-                  controller: edateController,
-                  keyboardType: TextInputType.none,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                    ),
-                    labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
-                    alignLabelWithHint: true,
-                    //border: OutlineInputBorder(),
-                    labelText: 'Expiration date',
-                    errorText: valid_edate,
-                  ),
+                child:
+
+                SubmitInputTextField(
+                  labelText: 'Expiraiton date',
+                  errorText: valid_edate,
+                  inputTextController: edateController,
                   onTap: () async {
-                    DateTime? picked = (await showDatePicker(
-                        helpText: "Expiration date",
-                        context: context,
-                        initialDate: sdateController!.text == ""? selectedDate:DateTime.parse(sdateController!.text) ,
-                        firstDate: sdateController!.text == ""?selectedDate:DateTime.parse(sdateController!.text), //DateTime(1900, 8),
-                        lastDate: DateTime(2101)));
-                    edateController!.text = (picked == null)?"":"${picked.toLocal()}".split(' ')[0];
-                  },
+                DateTime? picked = (await showDatePicker(
+                helpText: "Expiration date",
+                context: context,
+                initialDate: sdateController!.text == ""? selectedDate:DateTime.parse(sdateController!.text) ,
+                firstDate: sdateController!.text == ""?selectedDate:DateTime.parse(sdateController!.text), //DateTime(1900, 8),
+                lastDate: DateTime(2101)));
+                edateController!.text = (picked == null)?"":"${picked.toLocal()}".split(' ')[0];
+                },
                 ),
+                // TextField(
+                //  // focusNode: _focusNodeEdate,
+                //   textInputAction: TextInputAction.next,
+                //   controller: edateController,
+                //   keyboardType: TextInputType.none,
+                //   decoration: InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
+                //     ),
+                //     labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
+                //     alignLabelWithHint: true,
+                //     //border: OutlineInputBorder(),
+                //     labelText: 'Expiration date',
+                //     errorText: valid_edate,
+                //   ),
+                //   onTap: () async {
+                //     DateTime? picked = (await showDatePicker(
+                //         helpText: "Expiration date",
+                //         context: context,
+                //         initialDate: sdateController!.text == ""? selectedDate:DateTime.parse(sdateController!.text) ,
+                //         firstDate: sdateController!.text == ""?selectedDate:DateTime.parse(sdateController!.text), //DateTime(1900, 8),
+                //         lastDate: DateTime(2101)));
+                //     edateController!.text = (picked == null)?"":"${picked.toLocal()}".split(' ')[0];
+                //   },
+                // ),
               ),
+
               Container(
                 alignment: Alignment.center,
                 child: TextButton(
@@ -657,57 +704,82 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                   fit: BoxFit.fitHeight,
                 ),
               ),
+              SubmitButtonField(
+                  buttonText: 'Submit',
+                    onPressed: () async {
+                      setState(() {
 
-              Container(
-                height: 45,
-                width: double.infinity,
-                margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
-                  ],
-                  borderRadius: BorderRadius.circular(5),
-                  gradient: LinearGradient(
-                    stops: [0.1, 0.5, 1.0],
-                    colors: [
-                      Colors.green,
-                      Colors.lightGreen,
-                      Colors.green,
-                    ],
-                  ),
-                ),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
-                    primary: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-                  onPressed: () async {
-                    setState(() {
+                      valid_iname = validate_iname(inameController!.text);
+                     // valid_uname = validate_uname(unameController!.text);
+                      valid_aprice = validate_aprice(apriceController!.text);
+                      valid_dprice = validate_dprice(dpriceController!.text);
+                      valid_sdate = validate_sdate(sdateController!.text);
+                      valid_edate = validate_edate(edateController!.text);
 
-                    valid_iname = validate_iname(inameController!.text);
-                   // valid_uname = validate_uname(unameController!.text);
-                    valid_aprice = validate_aprice(apriceController!.text);
-                    valid_dprice = validate_dprice(dpriceController!.text);
-                    valid_sdate = validate_sdate(sdateController!.text);
-                    valid_edate = validate_edate(edateController!.text);
+                      if (_image == null)
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('no image was selected')));
+                      else {
+                        widget.UploadFile(filePath: image!.path, fileName: image!.name).then((value) => print('done'));
+                      }
 
-                    if (_image == null)
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('no image was selected')));
-                    else {
-                      widget.UploadFile(filePath: image!.path, fileName: image!.name).then((value) => print('done'));
-                    }
+                      if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
+                        submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: image!.name ));
+                        //setState(() {
+                          //_image = File(image!.path);
 
-                    if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
-                      submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: image!.name ));
-                      //setState(() {
-                        //_image = File(image!.path);
-
-                    }
-                    });},
-                  child: const Text('Submit'),
-                ),
+                      }
+                      });},
               ),
+              // Container(
+              //   height: 45,
+              //   width: double.infinity,
+              //   margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
+              //   decoration: BoxDecoration(
+              //     boxShadow: [
+              //       BoxShadow(
+              //           color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
+              //     ],
+              //     borderRadius: BorderRadius.circular(5),
+              //     gradient: LinearGradient(
+              //       stops: [0.1, 0.5, 1.0],
+              //       colors: [
+              //         Colors.green,
+              //         Colors.lightGreen,
+              //         Colors.green,
+              //       ],
+              //     ),
+              //   ),
+              //   child: ElevatedButton(
+              //     style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
+              //       primary: Colors.transparent,
+              //       shadowColor: Colors.transparent,
+              //     ),
+              //     onPressed: () async {
+              //       setState(() {
+              //
+              //       valid_iname = validate_iname(inameController!.text);
+              //      // valid_uname = validate_uname(unameController!.text);
+              //       valid_aprice = validate_aprice(apriceController!.text);
+              //       valid_dprice = validate_dprice(dpriceController!.text);
+              //       valid_sdate = validate_sdate(sdateController!.text);
+              //       valid_edate = validate_edate(edateController!.text);
+              //
+              //       if (_image == null)
+              //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('no image was selected')));
+              //       else {
+              //         widget.UploadFile(filePath: image!.path, fileName: image!.name).then((value) => print('done'));
+              //       }
+              //
+              //       if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
+              //         submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: image!.name ));
+              //         //setState(() {
+              //           //_image = File(image!.path);
+              //
+              //       }
+              //       });},
+              //     child: const Text('Submit'),
+              //   ),
+              // ),
 
             Container(
               // height: 45,

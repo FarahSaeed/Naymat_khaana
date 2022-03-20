@@ -11,6 +11,7 @@ import 'package:naymat_khaana/blocs/basketBloc/basket_state.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_bloc.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_event.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_state.dart';
+import 'package:naymat_khaana/custom_widgets/home_page_widgets.dart';
 import 'package:naymat_khaana/repositories/user_repository.dart';
 import 'package:naymat_khaana/ui/submit_food_item_page.dart';
 
@@ -269,77 +270,72 @@ class HomePage extends StatelessWidget {
                         // ),
                         Container(
                           margin: const EdgeInsets.only(top: 150.0, left:20),
-
                           child: Wrap(
                             runSpacing: 10,
                             spacing: 10,
                             children: [
-                              Container(
-                              //clipBehavior: Clip.hardEdge,
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                //  borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: ElevatedButton(
-
-                                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 15),
-                                      primary: Colors.white,
-                                    onPrimary: Colors.green,
-                                    shadowColor: Colors.green
+                              HomePageMenuItem(
+                                  menuItemText: 'Submit a Food Item',
+                                  onPressed:  ()  async { navigateToSubmitFoodItemPage(context);}
                                   ),
-                                  onPressed: ()  async { navigateToSubmitFoodItemPage(context);
-                                  },
-
-                                  child: const  Text('Submit a Food Item')
-                              ),
-                            ),
-                              Container(
-                                height: 100,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 15),
-                                      primary: Colors.white,
-                                      onPrimary: Colors.green,
-                                      shadowColor: Colors.green),
-                                  onPressed: ()  async { navigateToExploreFoodItemsPage(context);
-                                  },
-                                  child: const Text('Explore Food Items'),
-                                ),
-                              ),
-                              Container(
-                                height: 100,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 15),
-                                      primary: Colors.white,
-                                      onPrimary: Colors.green,
-                                      shadowColor: Colors.green),
-                                  onPressed: ()  async { navigateToBasketPage(context);
-                                  },
-                                  child: const Text('My basket'),
-                                ),
+                            //   Container(
+                            //   //clipBehavior: Clip.hardEdge,
+                            //   height: 100,
+                            //   width: 100,
+                            //   decoration: BoxDecoration(
+                            //     //  borderRadius: BorderRadius.circular(15),
+                            //   ),
+                            //   child: ElevatedButton(
+                            //
+                            //       style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 15),
+                            //           primary: Colors.white,
+                            //         onPrimary: Colors.green,
+                            //         shadowColor: Colors.green
+                            //       ),
+                            //       onPressed: ()  async { navigateToSubmitFoodItemPage(context);
+                            //       },
+                            //
+                            //       child: const  Text('Submit a Food Item')
+                            //   ),
+                            // ),
+                              HomePageMenuItem(
+                                  menuItemText: 'Explore Food Items',
+                                  onPressed:  ()  async { navigateToExploreFoodItemsPage(context);}
                               ),
                               // Container(
-                              //   height: 100, width: 100,
+                              //   height: 100,
+                              //   width: 100,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(40),
+                              //   ),
                               //   child: ElevatedButton(
                               //     style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 15),
                               //         primary: Colors.white,
                               //         onPrimary: Colors.green,
-                              //         shadowColor: Colors.green,
-                              //
-                              //     ),
-                              //     onPressed: ()  async {
-                              //       //User user = (await this.userRepository!.getCurrentUser())!;
-                              //       homePageBloc!.add(LogoutButtonPressedEvent());
+                              //         shadowColor: Colors.green),
+                              //     onPressed: ()  async { navigateToExploreFoodItemsPage(context);
                               //     },
-                              //     child: const Text('Log out'),
+                              //     child: const Text('Explore Food Items'),
+                              //   ),
+                              // ),
+                              HomePageMenuItem(
+                                  menuItemText: 'My basket',
+                                  onPressed:  ()  async { navigateToBasketPage(context);}
+                              ),
+                              // Container(
+                              //   height: 100,
+                              //   width: 100,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(40),
+                              //   ),
+                              //   child: ElevatedButton(
+                              //     style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 15),
+                              //         primary: Colors.white,
+                              //         onPrimary: Colors.green,
+                              //         shadowColor: Colors.green),
+                              //     onPressed: ()  async { navigateToBasketPage(context);
+                              //     },
+                              //     child: const Text('My basket'),
                               //   ),
                               // ),
                           ]),

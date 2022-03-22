@@ -14,6 +14,7 @@ import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_stat
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_bloc.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_event.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_state.dart';
+import 'package:naymat_khaana/custom_widgets/explore_food_items_page_widgets.dart';
 import 'package:naymat_khaana/ui/food_item_desc_page.dart';
 import 'basket_page.dart';
 import 'home_page.dart';
@@ -411,7 +412,13 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
                       }
                     });
                     foodItemsList.sort((a, b) => DateTime.parse(b.edate).compareTo(DateTime.parse(a.edate)) );
-                    return buildNewList(foodItemsList);
+                    return
+                      ExploreListView(
+                      useraccountname: this.useraccount.uname,
+                      exploreFoodItemsBloc: exploreFoodItemsBloc!,
+                      foodItemList: foodItemsList,
+                    );
+                      //buildNewList(foodItemsList);
                   },
                 )
               //alignment: Alignment(0.0, 0.0),
@@ -454,7 +461,6 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
 
   ListView buildNewList(List<FoodItem> foodItemList){
     return ListView(
-
       children: foodItemList.map((FoodItem fooditem) {
         //Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
         DateTime expirationDate = DateTime.parse(fooditem.edate); //yMMMMd
@@ -463,63 +469,18 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
         return Card(
           margin: const EdgeInsets.only( top: 10, left: 25.0, right: 25.0),
           child: ListTile(
-            // leading:
-            // Container(
-            //   // height: 45,
-            //   // width: double.infinity,
-            //   // margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
-            //   // child: FutureBuilder(
-            //   //     future: widget.downloadURL(imagename: 'scaled_image_picker1176476598179497756.jpg'),
-            //   //     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            //   //       if (snapshot.hasError) {
-            //   //         return Text('Something went wrong');
-            //   //       }
-            //   //       if (snapshot.connectionState == ConnectionState.waiting) {
-            //   //         return Text("Loading");
-            //   //       }
-            //   //       return Container(
-            //   //           width: 300,
-            //   //           height: 250,
-            //   //           child: Image.network(snapshot.data!, fit: BoxFit.cover )
-            //   //
-            //   //       );
-            //   //     }),
-            // ),
-            //
-
-
-
-            // ConstrainedBox(
-            //   constraints: BoxConstraints(
-            //     minWidth: 44,
-            //     minHeight: 44,
-            //     maxWidth: 64,
-            //     maxHeight: 64,
-            //   ),
-            //   child: Image.asset(profileImage, fit: BoxFit.cover),
-            // ),
             contentPadding:const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom:5.0),
-            // minVerticalPadding: 10,
-            //  String iname = data['item_name'];
-            //  String uname = data['username'];
-            //  String aprice = data['actual_price'];
-            //  String dprice = data['discount_price'];
-            //  String sdate = data['submit_date'];
-            //  String edate = data['exp_date'];
             title: Padding(
               padding: const EdgeInsets.only(bottom:8.0),
               child: Text(capitalize(fooditem.iname),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            // subtitle: Text(data['user_email']),
             subtitle:
             Container(
               child: Stack(
                 children: [Text.rich(TextSpan(
-                  //text: 'This item costs ',
                   children: <TextSpan>[
-
                     new TextSpan(
                       text: ' \$'+ fooditem.dprice +' ',
                       style: new TextStyle(
@@ -537,73 +498,28 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
                       text: "\n Not available " ,
                       style:  TextStyle(
                           color: Colors.grey,fontSize: 15.0, height: 2.0
-                        // decoration: TextDecoration.lineThrough,
                       ),
                     ):
                     TextSpan(
                       text: "\n Expiring " + DateFormat("MMMd").format(DateTime.parse(fooditem.edate)),
                       style:  TextStyle(
                           color: Colors.green, fontSize: 15.0, height: 2.0
-                        // decoration: TextDecoration.lineThrough,
                       ),
-                    )
-                    ,
+                    ),
                   ],
                 ),
                 ),],
               ),
             ),
-            // Text(
-            //     "\$"+ fooditem.dprice + "\n\n Expiring on " + DateFormat("yMMMd").format(DateTime.parse(fooditem.edate)),
-            //     // " Discounted price \$" + fooditem.dprice
-            //     // + "\n Original price: \$" + fooditem.aprice
-            //     // + "\n Expiring on " + DateFormat("yMMMMd").format(DateTime.parse(fooditem.edate))
-            //     // + "\n Posted on  " + DateFormat("yMMMMd").format(DateTime.parse(fooditem.sdate))
-            //     // + "\n\n Posted by: "+ fooditem.uname,
-            //   style: TextStyle(fontSize: 15),
-            //
-            // ),
-            // + "\n " + (isExpired?"Expired":"") // isExpired?"":""
-            // + "\n  Expired {$isExpired}" + (isExpired?"Expired":"") // isExpired?"":""
-            //
-            //  + "\n Id: " + fooditem.id!),
             isThreeLine: true,
-
             trailing:isExpired?null://Text("not available"):
             IconButton(
-              // icon: const Icon(Icons.add_shopping_cart_rounded),
               icon: const Icon(Icons.add_rounded),
               color: isExpired? Colors.grey: Colors.green,
-              // iconSize: 25.0,
               onPressed: isExpired?null: () {
-                // foodItemList[index].useremail;
-                // print('foodItemList[index] is $data['user_email']');
                 exploreFoodItemsBloc!.add(AddButtonPressedEvent(id: fooditem.id!, recieveruname: this.useraccount.uname ));
-
               },
             ),
-            // IconButton(
-            //   // icon: const Icon(Icons.add_shopping_cart_rounded),
-            //   icon: const Icon(Icons.remove),
-            //   //color: isExpired? Colors.grey: Colors.red,
-            //   color: Colors.red,
-            //   iconSize: 25.0,
-            //   onPressed: (){
-            //     var result = removeFromBasket(document.id);
-            //     final snackBar = SnackBar(
-            //       content: const Text('Item added to cart!'),
-            //       // action: SnackBarAction(
-            //       //   label: 'Undo',
-            //       //   onPressed: () {
-            //       //     // Some code to undo the change.
-            //       //   },
-            //       // ),
-            //     );
-            //     ScaffoldMessenger.of(context)
-            //         .showSnackBar(SnackBar(content: Text('$data["item_name"] dismissed')));
-            //   },
-            // ),
-
             leading: fooditem.imagename==""?null:ConstrainedBox(
               constraints: BoxConstraints(
                 minWidth: 44,
@@ -611,7 +527,6 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
                 maxWidth: 64,
                 maxHeight: 64,
               ),
-              // child: Image.asset(profileImage, fit: BoxFit.cover),
               child: FutureBuilder(
                   future: widget.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -626,7 +541,6 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
                         width: 300,
                         height: 250,
                         child: Image.network(snapshot.data!, fit: BoxFit.cover )
-
                     );
                   }),
             ),

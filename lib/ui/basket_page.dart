@@ -11,14 +11,13 @@ import 'package:naymat_khaana/blocs/basketBloc/basket_state.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_bloc.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_event.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_state.dart';
+import 'package:naymat_khaana/custom_widgets/basket_page_widgets.dart';
 import 'package:naymat_khaana/ui/food_item_desc_page.dart';
 import 'checkout_page.dart';
 import 'home_page.dart';
 import 'login_page.dart'; // new
 import 'package:intl/intl.dart';
 
-// new
-//import 'package:provider/provider.dart';           // new
 
 class BasketPageParent extends StatelessWidget {
   String title;
@@ -36,16 +35,10 @@ class BasketPageParent extends StatelessWidget {
           ),
           BlocProvider<HomePageBloc>(
             create: (context) => HomePageBloc(),
-            //child: BasketPage(title: this.title, useraccount: this.useraccount),
           ),
         ], child: BasketPage(title: this.title, useraccount: this.useraccount),
-    // child:       BlocProvider<BasketBloc>(
-    // create: (context) => BasketBloc(),
-    // child: BasketPage(title: this.title, useraccount: this.useraccount),
-    // );
+
     );
-
-
   }
 }
 
@@ -82,7 +75,6 @@ class BasketPageState extends State<BasketPage> {
   Stream<QuerySnapshot>? fooditemsStream;
   CollectionReference? fooditems;
   ValueNotifier<int> basketItemsCountNotifier =ValueNotifier(0);
-
   UserAccount useraccount;
   BasketPageState({required this.title, required this.useraccount}){
     customSearchBar =  Text(this.title);
@@ -92,9 +84,6 @@ class BasketPageState extends State<BasketPage> {
             .where("taken", isNull: true)
             .snapshots();
   }
-
-
-
   FocusNode myFocusNode = FocusNode();
   TextEditingController? inameController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -106,7 +95,6 @@ class BasketPageState extends State<BasketPage> {
     if (foodItemsList.isNotEmpty) {
       return foodItemsList;
     }
-    //exploreFoodItemsBloc!.foodItemsListReference();
     final QuerySnapshot snapshot= await FirebaseFirestore.instance.collection('fooditems').get();
     List<DocumentSnapshot> docs = snapshot.docs;
     if (docs.length > 0) {
@@ -143,68 +131,9 @@ class BasketPageState extends State<BasketPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   title: Text(this.title),
-      // ),
       appBar: AppBar(
         title: customSearchBar,
         automaticallyImplyLeading: false,
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.all(10.0),
-        //     child: Container(
-        //       width: 35.0,
-        //       alignment: Alignment.center,
-        //       child: GestureDetector(
-        //         onTap: () {
-        //           // Todo:navigate to cart screen
-        //           // if (kDebugMode) {
-        //           //   print("tapped on cart icon");
-        //           // }
-        //         },
-        //         child: Stack(
-        //           children: <Widget>[
-        //             const IconButton(
-        //               icon: Icon(
-        //                 Icons.shopping_cart_sharp,
-        //                 color: Colors.white60,
-        //               ),
-        //               onPressed: null,
-        //             ),
-        //             1 == 0
-        //                 ? Container()
-        //                 : Positioned(
-        //               top: 0,
-        //               right: 0,
-        //               child: Stack(
-        //                 children: <Widget>[
-        //                   Container(
-        //                     height: 20.0,
-        //                     width: 20.0,
-        //                     decoration: const BoxDecoration(
-        //                       color: Colors.lime,
-        //                       shape: BoxShape.circle,
-        //                     ),
-        //                     child: const Center(
-        //                       child: Text(
-        //                         "10",
-        //                         style: TextStyle(
-        //                           color: Colors.black54,
-        //                           fontSize: 11.0,
-        //                           fontWeight: FontWeight.bold,
-        //                         ),
-        //                       ),
-        //                     ),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ],
         actions: [
           IconButton(
             onPressed: () {
@@ -218,11 +147,8 @@ class BasketPageState extends State<BasketPage> {
                       autofocus: true,
                       focusNode: myFocusNode,
                       cursorColor: Colors.black,
-                      // cursorHeight: 30,
-
                       decoration: InputDecoration(
                         isDense: true,// this will remove the default content padding
-                        // now you can customize it here or add padding widget
                         contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
                         hintText: 'search',
                         hintStyle: TextStyle(
@@ -235,7 +161,6 @@ class BasketPageState extends State<BasketPage> {
                       style: TextStyle(
                         color: Colors.white,
                       ),
-                      // onChanged: searchOperation,
                       onChanged: (String searchText) {
                         setState(() {
                         });
@@ -268,8 +193,6 @@ class BasketPageState extends State<BasketPage> {
                   child: Stack(
                     children: <Widget>[
                       GestureDetector(
-                        // onTap: (){
-                        // } ,
                         child: Container(
                           height: 20.0,
                           width: 20.0,
@@ -290,7 +213,6 @@ class BasketPageState extends State<BasketPage> {
                                         ),
                                         );
                               },
-                              //child: Text('Hi')
                             ),
                           ),
                         ),
@@ -315,59 +237,16 @@ class BasketPageState extends State<BasketPage> {
         centerTitle: true,
       ),
       body: SafeArea(
-      //  child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // BlocListener<ExploreFoodItemsBloc,ExploreFoodItemsState>(
-              //   listener: (context,state){
-              //     if (state is AddingRecieverSuccessful){
-              //       final snackBar = SnackBar(
-              //         content: const Text('Item added to cart!'),
-              //         // action: SnackBarAction(
-              //         //   label: 'Undo',
-              //         //   onPressed: () {
-              //         //     // Some code to undo the change.
-              //         //   },
-              //         // ),
-              //       );
-              //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              //     }
-              //   },),
-
               BlocListener<BasketBloc,BasketState>(
                 listener: (context,state){
-                  // if (state is AddingRecieverSuccessful){
-                  //   // navigateToHomePage(context, state.useraccount);
-                  //   final snackBar = SnackBar(
-                  //     content: const Text('Item added to cart!'),
-                  //     // action: SnackBarAction(
-                  //     //   label: 'Undo',
-                  //     //   onPressed: () {
-                  //     //     // Some code to undo the change.
-                  //     //   },
-                  //     // ),
-                  //   );
-                  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  // }
                 },
                 child: BlocBuilder<BasketBloc,BasketState>(
                     builder: (context,state) {
                       return Container();
-                      // if (state is UserRegInitialState){
-                      //   return buildInitialUI();
-                      // }
-                      // else if (state is UserRegLoading) {
-                      //   return buildLoadingUI();
-                      // }
-                      // else if (state is UserRegSuccessful) {
-                      //   return Container();
-                      // }
-                      // else if (state is UserRegFailed) {
-                      //   return buildFailureUI(state.message);
-                      // }
-                      // else {return buildInitialUI();}
                     }
                 ),
               ),
@@ -383,15 +262,12 @@ class BasketPageState extends State<BasketPage> {
                     }
                 ),
               ),
-
-
               StreamBuilder<QuerySnapshot>(
                 stream: fooditemsStream,
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                if (snapshot.hasError) {
                  return Text('Something went wrong');
                }
-
                if (snapshot.connectionState == ConnectionState.waiting) {
                  return Text("Loading");
                }
@@ -400,162 +276,136 @@ class BasketPageState extends State<BasketPage> {
                }
                numitems=0;
                return Column(
-                 //mainAxisSize: MainAxisSize.max,
                  children: [
                    Container(
                      height: 570,
-                     child: ListView(
-                       shrinkWrap: true,
-
-                       children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                         FoodItem fooditem = FoodItem(iname: data['item_name'], uname: data['username'], aprice: data['actual_price'], dprice: data['discount_price'], sdate: data['submit_date'], edate: data['exp_date'], useremail: data['user_email'], imagename: data['imagename']==null? "":data['imagename']);
-                         DateTime expirationDate = DateTime.parse(fooditem.edate);
-                         final now = DateTime.now();
-                         final bool isExpired = expirationDate.isBefore(now);
-                         if (isExpired) return Container();
-                         numitems= numitems+1; //return Text('An expired item has been removed from your basket');
-                         WidgetsBinding.instance?.addPostFrameCallback((_){
-                           basketItemsCountNotifier.value = numitems;
-                         });
-                         // setState(() {
-                         // });
-                         return Dismissible(
-                           key: UniqueKey(),
-                           onDismissed: (direction) {
-                             numitems = numitems-1;
-                             basketItemsCountNotifier.value = numitems;
-                             var result = removeFromBasket(document.id);
-                             final snackBar = SnackBar(
-                               content: const Text('Item is removed from basket.'),
-                             );
-                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                           },
-                           background: Container(color: Colors.green),
-
-                           child: Card(
-                             margin: const EdgeInsets.only( top: 10, left: 25.0, right: 25.0),
-
-                             child: ListTile(
-                               contentPadding:const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom:5.0),
-
-                               //      String iname = data['item_name'];
-                       //  String uname = data['username'];
-                       //  String aprice = data['actual_price'];
-                       //  String dprice = data['discount_price'];
-                       //  String sdate = data['submit_date'];
-                       //  String edate = data['exp_date'];
-                               title: Padding(
-                                 padding: const EdgeInsets.only(bottom:8.0),
-                                 child: Text(capitalize(data['item_name']),
-                                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                 ),
-                               ),
-                               // subtitle: Text(data['user_email']),
-                               subtitle:
-                               Text.rich(TextSpan(
-                                 //text: 'This item costs ',
-                                 children: <TextSpan>[
-
-                                   new TextSpan(
-                                     text: ' \$'+ fooditem.dprice +' ',
-                                     style: new TextStyle(
-                                       color: Colors.green, fontSize: 20.0,
-                                     ),
-                                   ),
-                                   new TextSpan(
-                                     text: '\$'+ fooditem.aprice,
-                                     style: new TextStyle(
-                                       color: Color(0xFF90D493),
-                                       decoration: TextDecoration.lineThrough,
-                                     ),
-                                   ),
-                                   isExpired? TextSpan(
-                                     text: "\n Not available " ,
-                                     style:  TextStyle(
-                                         color: Colors.grey,fontSize: 15.0, height: 2.0
-                                       // decoration: TextDecoration.lineThrough,
-                                     ),
-                                   ):
-                                   TextSpan(
-                                     text: "\n Expiring " + DateFormat("yMMMd").format(DateTime.parse(fooditem.edate)),
-                                     style:  TextStyle(
-                                         color: Colors.green, fontSize: 15.0, height: 2.0
-                                       // decoration: TextDecoration.lineThrough,
-                                     ),
-                                   )
-                                   ,
-                                 ],
-                               ),
-                               ),
-                               // subtitle: Text(
-                               //    // " Posted by: "+ data['user_email']
-                               //    // + "\n Actual price: " + data['actual_price']
-                               //    // + "\n Discounted price: " + data['discount_price']
-                               //    // + "\n Posting date: " + data['submit_date']
-                               //    // + "\n Expiry date: " + data['exp_date']),
-                               //   " Discounted price \$" + data['discount_price']
-                               //       + "\n Original price: \$" + data['actual_price']
-                               //       + "\n Expiring on " + DateFormat("yMMMMd").format(DateTime.parse(data['exp_date']))
-                               //       + "\n Posted on  " + DateFormat("yMMMMd").format(DateTime.parse(data['submit_date']))
-                               //       + "\n\n Posted by: "+ data['username']),
-                                   //+ "\n " + (isExpired?"Expired":"") // isExpired?"":""
-                                   // + "\n  Expired {$isExpired}" + (isExpired?"Expired":"") // isExpired?"":""
-                                   //
-                                 //  + "\n Id: " + document.id),
-                               isThreeLine: true,
-                               leading: fooditem.imagename==""?null:ConstrainedBox(
-                                 constraints: BoxConstraints(
-                                   minWidth: 44,
-                                   minHeight: 44,
-                                   maxWidth: 64,
-                                   maxHeight: 64,
-                                 ),
-                                 // child: Image.asset(profileImage, fit: BoxFit.cover),
-                                 child: FutureBuilder(
-                                     future: widget.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
-                                     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                                       if (snapshot.hasError) {
-                                         return Text('Something went wrong');
-                                       }
-                                       if (snapshot.connectionState == ConnectionState.waiting) {
-                                         return Text("Loading");
-                                       }
-                                       //return Image.asset(snapshot.data!, fit: BoxFit.cover);
-                                       return Container(
-                                           width: 300,
-                                           height: 250,
-                                           child: Image.network(snapshot.data!, fit: BoxFit.cover )
-
-                                       );
-                                     }),
-                               ),
-                               trailing:
-                               IconButton(
-                                 // icon: const Icon(Icons.add_shopping_cart_rounded),
-                                 icon: const Icon(Icons.remove),
-                                 //color: isExpired? Colors.grey: Colors.red,
-                                 color: Colors.red,
-                                 iconSize: 25.0,
-                                 onPressed: (){
-
-                                     numitems = numitems-1;
-                                     basketItemsCountNotifier.value = numitems;
-                                     var result = removeFromBasket(document.id);
-                                     final snackBar = SnackBar(
-                                       content: const Text('Item is removed from basket.'),
-                                     );
-                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-
-                                 },
-                               ),
-
-                             ),
-                           ),
-                         );
-                       }).toList(),
-                     ),
+                     child:
+                     BasketListView(
+                       snapshot: snapshot,
+                       basketItemsCountNotifier: basketItemsCountNotifier,
+                       removeFromBasket: removeFromBasket,
+                       useraccountname: useraccount.uname,
+                     )
+                     // child: ListView(
+                     //   shrinkWrap: true,
+                     //   children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                     //     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                     //     FoodItem fooditem = FoodItem(iname: data['item_name'], uname: data['username'], aprice: data['actual_price'], dprice: data['discount_price'], sdate: data['submit_date'], edate: data['exp_date'], useremail: data['user_email'], imagename: data['imagename']==null? "":data['imagename']);
+                     //     DateTime expirationDate = DateTime.parse(fooditem.edate);
+                     //     final now = DateTime.now();
+                     //     final bool isExpired = expirationDate.isBefore(now);
+                     //     if (isExpired) return Container();
+                     //     numitems= numitems+1; //return Text('An expired item has been removed from your basket');
+                     //     WidgetsBinding.instance?.addPostFrameCallback((_){
+                     //       basketItemsCountNotifier.value = numitems;
+                     //     });
+                     //     return Dismissible(
+                     //       key: UniqueKey(),
+                     //       onDismissed: (direction) {
+                     //         numitems = numitems-1;
+                     //         basketItemsCountNotifier.value = numitems;
+                     //         var result = removeFromBasket(document.id);
+                     //         final snackBar = SnackBar(
+                     //           content: const Text('Item is removed from basket.'),
+                     //         );
+                     //         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                     //       },
+                     //       background: Container(color: Colors.green),
+                     //       child: Card(
+                     //         margin: const EdgeInsets.only( top: 10, left: 25.0, right: 25.0),
+                     //         child: ListTile(
+                     //           contentPadding:const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom:5.0),
+                     //           title: Padding(
+                     //             padding: const EdgeInsets.only(bottom:8.0),
+                     //             child: Text(capitalize(data['item_name']),
+                     //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                     //             ),
+                     //           ),
+                     //           subtitle:
+                     //           Text.rich(TextSpan(
+                     //             children: <TextSpan>[
+                     //               new TextSpan(
+                     //                 text: ' \$'+ fooditem.dprice +' ',
+                     //                 style: new TextStyle(
+                     //                   color: Colors.green, fontSize: 20.0,
+                     //                 ),
+                     //               ),
+                     //               new TextSpan(
+                     //                 text: '\$'+ fooditem.aprice,
+                     //                 style: new TextStyle(
+                     //                   color: Color(0xFF90D493),
+                     //                   decoration: TextDecoration.lineThrough,
+                     //                 ),
+                     //               ),
+                     //               isExpired? TextSpan(
+                     //                 text: "\n Not available " ,
+                     //                 style:  TextStyle(
+                     //                     color: Colors.grey,fontSize: 15.0, height: 2.0
+                     //                 ),
+                     //               ):
+                     //               TextSpan(
+                     //                 text: "\n Expiring " + DateFormat("yMMMd").format(DateTime.parse(fooditem.edate)),
+                     //                 style:  TextStyle(
+                     //                     color: Colors.green, fontSize: 15.0, height: 2.0
+                     //                   // decoration: TextDecoration.lineThrough,
+                     //                 ),
+                     //               )
+                     //               ,
+                     //             ],
+                     //           ),
+                     //           ),
+                     //           isThreeLine: true,
+                     //           leading: fooditem.imagename==""?null:ConstrainedBox(
+                     //             constraints: BoxConstraints(
+                     //               minWidth: 44,
+                     //               minHeight: 44,
+                     //               maxWidth: 64,
+                     //               maxHeight: 64,
+                     //             ),
+                     //             child: FutureBuilder(
+                     //                 future: widget.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
+                     //                 builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                     //                   if (snapshot.hasError) {
+                     //                     return Text('Something went wrong');
+                     //                   }
+                     //                   if (snapshot.connectionState == ConnectionState.waiting) {
+                     //                     return Text("Loading");
+                     //                   }
+                     //                   //return Image.asset(snapshot.data!, fit: BoxFit.cover);
+                     //                   return Container(
+                     //                       width: 300,
+                     //                       height: 250,
+                     //                       child: Image.network(snapshot.data!, fit: BoxFit.cover )
+                     //
+                     //                   );
+                     //                 }),
+                     //           ),
+                     //           trailing:
+                     //           IconButton(
+                     //             // icon: const Icon(Icons.add_shopping_cart_rounded),
+                     //             icon: const Icon(Icons.remove),
+                     //             //color: isExpired? Colors.grey: Colors.red,
+                     //             color: Colors.red,
+                     //             iconSize: 25.0,
+                     //             onPressed: (){
+                     //
+                     //                 numitems = numitems-1;
+                     //                 basketItemsCountNotifier.value = numitems;
+                     //                 var result = removeFromBasket(document.id);
+                     //                 final snackBar = SnackBar(
+                     //                   content: const Text('Item is removed from basket.'),
+                     //                 );
+                     //                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                     //
+                     //
+                     //             },
+                     //           ),
+                     //
+                     //         ),
+                     //       ),
+                     //     );
+                     //   }).toList(),
+                     // ),
                    ),
                this.numitems>0?
                Container(
@@ -594,14 +444,8 @@ class BasketPageState extends State<BasketPage> {
                );
                 },
               ),
-
-
-
-
             ],
-
           ),
-      //  ),
       ),
     );
   }

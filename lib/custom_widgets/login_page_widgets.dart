@@ -169,3 +169,71 @@ class LoginTextButtonState  extends State<LoginTextButton>{
 //////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// LoginTextButton ////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// LoginGoogleTextButton ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+class LoginGoogleTextButton extends StatefulWidget {
+  LoginGoogleTextButton({
+    Key? key,
+    required this.buttonText,
+    required this.googleEmailController,
+    required this.onOKPressed,
+    required this.onCancelPressed,
+  }) : super(key: key);
+
+  String buttonText;
+  TextEditingController googleEmailController;
+  void Function()? onOKPressed;
+  void Function()? onCancelPressed;
+
+  @override
+  LoginGoogleTextButtonState createState() {
+    return LoginGoogleTextButtonState();
+  }
+}
+class LoginGoogleTextButtonState  extends State<LoginGoogleTextButton>{
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 1.0),
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+      child: TextButton(
+        style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+        ),
+        onPressed: (){
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Gmail address'),
+                content: TextField(
+                  controller: widget.googleEmailController,
+                  decoration: InputDecoration(hintText: "Text Field in Dialog"),
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                    child: Text('CANCEL'),
+                    onPressed: widget.onCancelPressed,
+                  ),
+                  ElevatedButton(
+                    child: Text('OK'),
+                    onPressed: widget.onOKPressed,
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: Text(widget.buttonText),
+      ),
+    );
+  }
+}
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// LoginTextButton ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////

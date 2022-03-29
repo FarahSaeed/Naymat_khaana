@@ -1,19 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart'; // new
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:naymat_khaana/app_classes/user_account.dart';
 import 'package:naymat_khaana/blocs/loginBloc/login_bloc.dart';
 import 'package:naymat_khaana/blocs/loginBloc/login_event.dart';
 import 'package:naymat_khaana/blocs/loginBloc/login_state.dart';
 import 'package:naymat_khaana/custom_widgets/login_page_widgets.dart';
 import 'package:naymat_khaana/repositories/user_repository.dart';
-import 'package:naymat_khaana/ui/signup_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home_page.dart'; // new
+import 'package:naymat_khaana/utils/navigation.dart';
+import 'package:naymat_khaana/utils/util_widgets.dart';
+import 'package:naymat_khaana/utils/validation.dart';
 
 class LoginPageParent extends StatelessWidget {
   String title;
@@ -28,9 +25,6 @@ class LoginPageParent extends StatelessWidget {
   }
 }
 
-// final _googleSignIn = GoogleSignIn(
-//     scopes: ['email']
-// );
 // Define a custom Form widget.
 class LoginPage extends StatefulWidget {
   String title;
@@ -58,18 +52,17 @@ class LoginPageState  extends State<LoginPage>{
   @override
   void initState(){
     loginBloc = BlocProvider.of<LoginBloc>(context);
-
     loginBloc!.add(InitialGoogleSignOutEvent());
 
     //signOut(); //_googleSignIn.signInSilently();
     super.initState();
   }
 
-  void _togglePasswordView() {
-    setState(() {
-      _isHidden = !_isHidden;
-    });
-  }
+  // void _togglePasswordView() {
+  //   setState(() {
+  //     _isHidden = !_isHidden;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +118,7 @@ class LoginPageState  extends State<LoginPage>{
               BlocListener<LoginBloc,LoginState>(
                 listener: (context,state){
                   if (state is LoginSuccessful){
-                    navigateToHomePage(context, state.useraccount);
+                    navigateToHomePage(context, state.useraccount, "Home");
                   }
                 },
                 child: BlocBuilder<LoginBloc,LoginState>(
@@ -187,49 +180,59 @@ class LoginPageState  extends State<LoginPage>{
             ),
             LoginTextButton(
               buttonText: "Sign up",
-              onPressed: () {navigateToSignupPage(context); },
+              onPressed: () {navigateToSignupPage(context, "Sign up"); },
             ),
-            LoginTextButton(
+            LoginGoogleTextButton(
               buttonText: "Sign in through google",
-              onPressed: (){
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('Gmail address'),
-                      content: TextField(
-                        controller: googleemailController,
-                        decoration: InputDecoration(hintText: "Text Field in Dialog"),
-                      ),
-                      actions: <Widget>[
-                        ElevatedButton(
-                          child: Text('CANCEL'),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ElevatedButton(
-                          child: Text('OK'),
-                          onPressed: () async {
-                            // print(_textFieldController.text);
-                            bool ue = await userRepository!.UserExist(googleemailController!.text);
-                            if (ue == true)
-                            {
-                              //SignIn();
-                              loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
-                              // LoginGoogleSignInEvent
-                            }
-                            else
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('problem while logging in')));
-
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+              googleEmailController: googleemailController!,
+                onCancelPressed: () {Navigator.pop(context);},
+                onOKPressed: () async {
+                bool userexists = await userRepository!.UserExist(googleemailController!.text);
+                if (userexists == true)
+                  loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
+                else
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('problem while logging in')));
+              Navigator.pop(context);
+            },
+              // onPressed: (){
+              //   showDialog(
+              //     context: context,
+              //     builder: (context) {
+              //       return AlertDialog(
+              //         title: Text('Gmail address'),
+              //         content: TextField(
+              //           controller: googleemailController,
+              //           decoration: InputDecoration(hintText: "Text Field in Dialog"),
+              //         ),
+              //         actions: <Widget>[
+              //           ElevatedButton(
+              //             child: Text('CANCEL'),
+              //             onPressed: () {
+              //               Navigator.pop(context);
+              //             },
+              //           ),
+              //           ElevatedButton(
+              //             child: Text('OK'),
+              //             onPressed: () async {
+              //               // print(_textFieldController.text);
+              //               bool ue = await userRepository!.UserExist(googleemailController!.text);
+              //               if (ue == true)
+              //               {
+              //                 //SignIn();
+              //                 loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
+              //                 // LoginGoogleSignInEvent
+              //               }
+              //               else
+              //                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('problem while logging in')));
+              //
+              //               Navigator.pop(context);
+              //             },
+              //           ),
+              //         ],
+              //       );
+              //     },
+              //   );
+              // },
             )
           ],),
             ],
@@ -254,19 +257,19 @@ class LoginPageState  extends State<LoginPage>{
   //   }
   // }
 
-  String? validate_email(String value) {
-    _counter++;
-    if (_counter >4) {
-      value = value == null? '':value;
-      bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else if (emailValid == false ) { return 'Invalid email address';}
-    else {  return null;}
-    }
-    else {
-      return null;
-    }
-  }
+  // String? validate_email(String value) {
+  //   _counter++;
+  //   if (_counter >4) {
+  //     value = value == null? '':value;
+  //     bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
+  //   if (value == '') {return 'Value Can\'t Be Empty'; }
+  //   else if (emailValid == false ) { return 'Invalid email address';}
+  //   else {  return null;}
+  //   }
+  //   else {
+  //     return null;
+  //   }
+  // }
   String? validate_password(String value) {
     _counter++;
     if (_counter >4) {
@@ -281,42 +284,17 @@ class LoginPageState  extends State<LoginPage>{
   }
 
 
-  Widget buildInitialUI(){
-    return Container();
-  }
-  Widget buildLoadingUI(){
-    return Center(
-      child:             LinearProgressIndicator(
-        semanticsLabel: 'Linear progress indicator',
-      ),
-    );
-  }
-  Widget buildFailureUI(String message){
-    return Text(
-        message,
-        style: TextStyle(
-          color: Colors.red,
-        )
-    );
-  }
 
-  void navigateToHomePage(BuildContext context, UserAccount useraccount){
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-        HomePageParent(title: 'Home', useraccount: useraccount)), (Route<dynamic> route) => false);
-  }
 
-  void navigateToSignupPage(BuildContext context){
-    Navigator.of(context).push(MaterialPageRoute(builder:
-        (context){ return SignupPageParent(title: 'Sign up');}));
-  }
 
-  void login() async {
-  setState(() {
-  valid_email = validate_email(emailController!.text);
-  valid_pass = validate_password(passwordController!.text);
-  if (valid_email == null  && valid_pass == null ){
-  loginBloc!.add(LoginButtonPressedEvent(email: emailController!.text.trim(), password: passwordController!.text));
-  }
-  });
-}
+//
+//   void login() async {
+//   setState(() {
+//   valid_email = validate_email(emailController!.text);
+//   valid_pass = validate_password(passwordController!.text);
+//   if (valid_email == null  && valid_pass == null ){
+//   loginBloc!.add(LoginButtonPressedEvent(email: emailController!.text.trim(), password: passwordController!.text));
+//   }
+//   });
+// }
 }

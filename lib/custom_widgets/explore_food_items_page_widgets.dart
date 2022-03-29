@@ -98,7 +98,7 @@ class ExploreListViewState  extends State<ExploreListView>{
               icon: const Icon(Icons.add_rounded),
               color: isExpired? Colors.grey: Colors.green,
               onPressed: isExpired?null: () {
-                widget.exploreFoodItemsBloc!.add(AddButtonPressedEvent(id: fooditem.id!, recieveruname: widget.useraccountname ));
+                widget.exploreFoodItemsBloc.add(AddButtonPressedEvent(id: fooditem.id!, recieveruname: widget.useraccountname ));
               },
             ),
             leading: fooditem.imagename==""?null:ConstrainedBox(

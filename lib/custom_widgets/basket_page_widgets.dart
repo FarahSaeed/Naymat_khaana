@@ -51,7 +51,7 @@ class BasketListViewState  extends State<BasketListView>{
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      children: widget.snapshot!.data!.docs.map((DocumentSnapshot document) {
+      children: widget.snapshot.data!.docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
         FoodItem fooditem = FoodItem(iname: data['item_name'], uname: data['username'], aprice: data['actual_price'], dprice: data['discount_price'], sdate: data['submit_date'], edate: data['exp_date'], useremail: data['user_email'], imagename: data['imagename']==null? "":data['imagename']);
         DateTime expirationDate = DateTime.parse(fooditem.edate);

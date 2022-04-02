@@ -9,11 +9,13 @@ import 'package:naymat_khaana/blocs/regBloc/user_reg_bloc.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_event.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_state.dart';
 import 'package:naymat_khaana/custom_widgets/signup_page_widgets.dart';
+import 'package:naymat_khaana/utils/navigation.dart';
+import 'package:naymat_khaana/utils/util_widgets.dart';
+import 'package:naymat_khaana/utils/validation.dart';
 
 import 'home_page.dart';
 import 'login_page.dart'; // new
-// new
-//import 'package:provider/provider.dart';           // new
+
 
 
 class SignupPageParent extends StatelessWidget {
@@ -110,7 +112,7 @@ class SignupPageState extends State<SignupPage> {
               BlocListener<UserRegBloc,UserRegState>(
                 listener: (context,state){
                   if (state is UserRegSuccessful){
-                  navigateToHomePage(context, state.useraccount);
+                  navigateToHomePage(context, state.useraccount, "Home");
                   }
                 },
                 child: BlocBuilder<UserRegBloc,UserRegState>(
@@ -290,7 +292,7 @@ class SignupPageState extends State<SignupPage> {
                           valid_dob = validate_dob(dobController!.text);
                           valid_email = validate_email(emailController!.text);
                           //valid_uname = validate_uname(unameController!.text);
-                          valid_pass = validate_pass(passwordController!.text);
+                          valid_pass = validate_password(passwordController!.text);
 
                           if (valid_fname == null && valid_lname == null && valid_dob == null && valid_email == null  && valid_pass == null ){
                             userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: 'na', password: passwordController!.text));
@@ -368,75 +370,4 @@ class SignupPageState extends State<SignupPage> {
 
   }
 
-  String? validate_fname(String value) {
-    value = value == null? '':value;
-    bool valid = RegExp(r"^[a-zA-Z*]+").hasMatch(value);
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else if (valid == false ) { return 'Invalid value';}
-    else {  return null;}
-  }
-
-  String? validate_lname(String value) {
-    value = value == null? '':value;
-    bool valid = RegExp(r"^[a-zA-Z*]+").hasMatch(value);
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else if (valid == false ) { return 'Invalid value';}
-    else {  return null;}
-  }
-
-  String? validate_dob(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-
-
-  String? validate_email(String value) {
-      value = value == null? '':value;
-      bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
-      if (value == '') {return 'Value Can\'t Be Empty'; }
-      else if (emailValid == false ) { return 'Invalid email address';}
-      else {  return null;}
-  }
-
-  // String? validate_uname(String value) {
-  //   value = value == null? '':value;
-  //   bool valid = RegExp(r"^[a-zA-Z*]+").hasMatch(value);
-  //   if (value == '') {return 'Value Can\'t Be Empty'; }
-  //   else if (valid == false ) { return 'Invalid value';}
-  //   else {  return null;}
-  // }
-
-  String? validate_pass(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-
-  Widget buildInitialUI(){
-    return Container(); //Text('Waiting for User registration');
-  }
-  Widget buildLoadingUI(){
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-  Widget buildFailureUI(String message){
-    return Text(
-        message,
-        style: TextStyle(
-          color: Colors.red,
-        )
-    );
-  }
-
-  void navigateToHomePage(BuildContext context, UserAccount useraccount){
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-        HomePageParent(title: 'Home', useraccount: useraccount)), (Route<dynamic> route) => false);
-  }
-
-  void navigateToLoginPage(BuildContext context){
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-        LoginPageParent(title: 'Login')), (Route<dynamic> route) => false);
-  }
 }

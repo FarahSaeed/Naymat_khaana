@@ -270,18 +270,7 @@ class LoginPageState  extends State<LoginPage>{
   //     return null;
   //   }
   // }
-  String? validate_password(String value) {
-    _counter++;
-    if (_counter >4) {
-      value = value == null? '':value;
-      if (value == '') {   return 'Value Can\'t Be Empty'; }
-      else {return null;}
-    }
-    else {
 
-      return null;
-    }
-  }
 
 
 

@@ -5,3 +5,10 @@ String? validate_email(String value) {
     else if (emailValid == false ) { return 'Invalid email address';}
     else {  return null;}
 }
+
+String? validate_password(String value) {
+    value = value == null? '':value;
+    if (value == '') {   return 'Value Can\'t Be Empty'; }
+    else {return null;}
+
+}

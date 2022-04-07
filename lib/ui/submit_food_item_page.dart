@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart'; // new
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:naymat_khaana/app_classes/food_item.dart';
 import 'package:naymat_khaana/app_classes/user_account.dart';
 import 'package:naymat_khaana/blocs/basketBloc/basket_bloc.dart';
 import 'package:naymat_khaana/blocs/basketBloc/basket_event.dart';
@@ -19,13 +17,15 @@ import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_bloc.dar
 import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_event.dart';
 import 'package:naymat_khaana/blocs/submitFoodItemBloc/submit_food_item_state.dart';
 import 'package:naymat_khaana/custom_widgets/submit_page_widgets.dart';
+import 'package:naymat_khaana/utils/cloud_storage.dart';
+import 'package:naymat_khaana/utils/navigation.dart';
+import 'package:naymat_khaana/utils/util_widgets.dart';
+import 'package:naymat_khaana/utils/validation.dart';
 
 
 import 'basket_page.dart';
 import 'home_page.dart';
 import 'login_page.dart'; // new
-// new
-//import 'package:provider/provider.dart';           // new
 
 
 class SubmitFoodItemPageParent extends StatelessWidget {
@@ -65,33 +65,34 @@ class SubmitFoodItemPage extends StatefulWidget {
   UserAccount useraccount;
   SubmitFoodItemPage({required this.title, required this.useraccount});
   ValueNotifier<int> basketItemsCountNotifier =ValueNotifier(0);
-final FirebaseStorage storage = FirebaseStorage.instance;
+  CloudStorage cloudStorage = CloudStorage();
 
+// final FirebaseStorage storage = FirebaseStorage.instance;
 
-Future<void> UploadFile({required String filePath,required String fileName}) async{
-  File file = File(filePath);
-  try{
-    await storage.ref('test/$fileName').putFile(file);
-  } on FirebaseException catch (e) {print(e);}
-}
+// Future<void> UploadFile({required String filePath,required String fileName}) async{
+//   File file = File(filePath);
+//   try{
+//     await storage.ref('test/$fileName').putFile(file);
+//   } on FirebaseException catch (e) {print(e);}
+// }
 
-  Future<String> downloadURL({required String imagename}) async{
-String durl = "";
-    try{
-      durl = await storage.ref('test/$imagename').getDownloadURL();
-      return durl;
-    } on FirebaseException catch (e) {print(e);}
-    return durl;
-  }
+// Future<String> downloadURL({required String imagename}) async{
+// String durl = "";
+//     try{
+//       durl = await storage.ref('test/$imagename').getDownloadURL();
+//       return durl;
+//     } on FirebaseException catch (e) {print(e);}
+//     return durl;
+//   }
 
-Future<ListResult> listFiles() async{
-  ListResult results = await storage.ref('test').listAll();
-
-  results.items.forEach((Reference ref) {
-    print('found file $ref');
-  });
-  return results;
-  }
+// Future<ListResult> listFiles() async{
+//   ListResult results = await storage.ref('test').listAll();
+//
+//   results.items.forEach((Reference ref) {
+//     print('found file $ref');
+//   });
+//   return results;
+//   }
 
   @override
   SubmitFoodItemPageState createState() {
@@ -196,7 +197,7 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                   color: Colors.white,
                 ),
                 onPressed: (){
-                  navigateToBasketPage(context);
+                  navigateToBasketPage( context, 'Basket', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
                 },
               ),
               Positioned(
@@ -237,17 +238,18 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
               ),
             ],
           ),
-          PopupMenuButton<String>(
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {'Logout', 'Settings'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          )
+          UserSideMenu(handleClick: handleClick,),
+          // PopupMenuButton<String>(
+          //   onSelected: handleClick,
+          //   itemBuilder: (BuildContext context) {
+          //     return {'Logout', 'Settings'}.map((String choice) {
+          //       return PopupMenuItem<String>(
+          //         value: choice,
+          //         child: Text(choice),
+          //       );
+          //     }).toList();
+          //   },
+          // )
         ]
       ),
       body: SafeArea(
@@ -712,21 +714,19 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                       valid_iname = validate_iname(inameController!.text);
                      // valid_uname = validate_uname(unameController!.text);
                       valid_aprice = validate_aprice(apriceController!.text);
-                      valid_dprice = validate_dprice(dpriceController!.text);
+                      valid_dprice = validate_dprice(dpriceController!.text,apriceController!.text, dpriceController!.text );
                       valid_sdate = validate_sdate(sdateController!.text);
-                      valid_edate = validate_edate(edateController!.text);
+                      valid_edate = validate_edate(edateController!.text,sdateController!.text,edateController!.text);
 
                       if (_image == null)
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('no image was selected')));
                       else {
-                        widget.UploadFile(filePath: image!.path, fileName: image!.name).then((value) => print('done'));
+                        widget.cloudStorage.UploadFile(filePath: image!.path, fileName: image!.name).then((value) => print('done'));
                       }
-
                       if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
                         submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: image!.name ));
                         //setState(() {
                           //_image = File(image!.path);
-
                       }
                       });},
               ),
@@ -812,7 +812,7 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
             ),
 
 
-              Container(
+              // Container(
                 // height: 45,
                 // width: double.infinity,
                 // margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
@@ -832,7 +832,7 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                 //
                 //       );
                 //     }),
-              ),
+              // ),
             ],
           ),
         ),
@@ -840,76 +840,6 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
     );
   }
 
-  String? validate_iname(String value) {
-      value = value == null? '':value;
-      if (value == '') {return 'Value Can\'t Be Empty'; }
-      else {  return null;}
-  }
-
-  String? validate_aprice(String value) {
-    value = value == null? '':value;
-    bool valid = RegExp(r"^[0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
-    var int_num = int.tryParse(value);
-    var double_num = double.tryParse(value);
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else if (int_num==null && double_num== null) {
-      return 'Invalid value';
-    }
-    else {  return null;}
-  }
-  String? validate_dprice(String value) {
-    value = value == null? '':value;
-    bool valid = RegExp(r"^[0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
-    var int_num = int.tryParse(value);
-    var double_num = double.tryParse(value);
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else if (int_num==null && double_num== null) {
-      return 'Invalid value';
-    }
-    if (apriceController!.text == null || apriceController!.text == ""){
-      return null; // it is handeled in aprice validator so returning null here
-    }
-
-    else if ( double.tryParse(apriceController!.text)! <= double.tryParse(dpriceController!.text)!  ){
-      return "Discounted price should be less than actual price";
-    }
-    else {  return null;}
-  }
-  String? validate_sdate(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-  String? validate_edate(String value) {
-    value = value == null || value == ''? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    if (sdateController!.text == '' || sdateController!.text == null) {return ''; }
-
-    DateTime sd = DateTime.parse(sdateController!.text);
-    DateTime ed = DateTime.parse(edateController!.text);
-    final bool edBeforesd = ed.isBefore(sd);
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else if (edBeforesd) {return 'Expiry date is before submission date';}
-    else {  return null;}
-  }
-
-  Widget buildInitialUI(){
-    return Container(); //Text('Waiting for Submission');
-  }
-  Widget buildLoadingUI(){
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-  Widget buildFailureUI(String message){
-    return Text(
-        message,
-        style: TextStyle(
-          color: Colors.red,
-        )
-    );
-  }
 
   void navigateToHomePage(BuildContext context, UserAccount useraccount){
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
@@ -925,17 +855,17 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
     }
   }
 
-  void navigateToLoginPage(BuildContext context) {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-        LoginPageParent(title: 'Login')), (Route<dynamic> route) => false);
-  }
-
-  void navigateToBasketPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return BasketPageParent(title: "Basket Items", useraccount: this.useraccount);
-    })).then(
-            (context) {
-          basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
-        });
-  }
+  // void navigateToLoginPage(BuildContext context) {
+  //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
+  //       LoginPageParent(title: 'Login')), (Route<dynamic> route) => false);
+  // }
+  //
+  // void navigateToBasketPage(BuildContext context) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return BasketPageParent(title: "Basket Items", useraccount: this.useraccount);
+  //   })).then(
+  //           (context) {
+  //         basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
+  //       });
+  // }
 }

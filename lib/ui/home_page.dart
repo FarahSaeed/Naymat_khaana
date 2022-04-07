@@ -13,7 +13,8 @@ import 'package:naymat_khaana/blocs/homePageBloc/home_page_event.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_state.dart';
 import 'package:naymat_khaana/custom_widgets/home_page_widgets.dart';
 import 'package:naymat_khaana/repositories/user_repository.dart';
-import 'package:naymat_khaana/ui/submit_food_item_page.dart';
+import 'package:naymat_khaana/utils/navigation.dart';
+import 'package:naymat_khaana/utils/util_widgets.dart';
 
 import 'basket_page.dart';
 import 'checkout_page.dart';
@@ -90,7 +91,7 @@ class HomePage extends StatelessWidget {
                   color: Colors.white,
                 ),
                 onPressed: (){
-                  navigateToBasketPage(context);
+                  navigateToBasketPage( context, 'Basket', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
                 },
               ),
               Positioned(
@@ -132,18 +133,18 @@ class HomePage extends StatelessWidget {
             ],
           ),
 
-
-          PopupMenuButton<String>(
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {'Logout', 'Settings'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          ),
+          UserSideMenu(handleClick: handleClick),
+          // PopupMenuButton<String>(
+          //   onSelected: handleClick,
+          //   itemBuilder: (BuildContext context) {
+          //     return {'Logout', 'Settings'}.map((String choice) {
+          //       return PopupMenuItem<String>(
+          //         value: choice,
+          //         child: Text(choice),
+          //       );
+          //     }).toList();
+          //   },
+          // ),
         ],
       ),
 
@@ -276,7 +277,9 @@ class HomePage extends StatelessWidget {
                             children: [
                               HomePageMenuItem(
                                   menuItemText: 'Submit a Food Item',
-                                  onPressed:  ()  async { navigateToSubmitFoodItemPage(context);}
+                                  onPressed:  ()  async {
+                                    navigateToSubmitFoodItemPage( context, 'Submit a food item', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
+                                  }
                                   ),
                             //   Container(
                             //   //clipBehavior: Clip.hardEdge,
@@ -300,7 +303,9 @@ class HomePage extends StatelessWidget {
                             // ),
                               HomePageMenuItem(
                                   menuItemText: 'Explore Food Items',
-                                  onPressed:  ()  async { navigateToExploreFoodItemsPage(context);}
+                                  onPressed:  ()  async {
+                                    navigateToExploreFoodItemsPage( context, 'Explore', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
+                                  }
                               ),
                               // Container(
                               //   height: 100,
@@ -320,7 +325,9 @@ class HomePage extends StatelessWidget {
                               // ),
                               HomePageMenuItem(
                                   menuItemText: 'My basket',
-                                  onPressed:  ()  async { navigateToBasketPage(context);}
+                                  onPressed:  ()  async {
+                                    navigateToBasketPage( context, 'Basket', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
+                                  }
                               ),
                               // Container(
                               //   height: 100,
@@ -417,10 +424,6 @@ class HomePage extends StatelessWidget {
               //       ]),
               //   ),
               // ),
-
-
-
-
                 ],
               ),
             ),
@@ -437,48 +440,42 @@ class HomePage extends StatelessWidget {
         break;
     }
   }
-  void navigateToLoginPage(BuildContext context) {
-     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-        LoginPageParent(title: 'Login')), (Route<dynamic> route) => false);
-  }
 
-  void navigateToSubmitFoodItemPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return SubmitFoodItemPageParent(title: "Submit Food Item", useraccount: this.useraccount);
-    })).then(
-            (context) {
-          basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
-        });
-  }
+  // void navigateToSubmitFoodItemPage(BuildContext context, String title, UserAccount userAccount, HomePageStartedEvent homePageStartedEvent) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return SubmitFoodItemPageParent(title: "Submit Food Item", useraccount: this.useraccount);
+  //   })).then(
+  //           (context) {
+  //         basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
+  //       });
+  // }
 
-  void navigateToExploreFoodItemsPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ExploreFoodItemsPageParent(title: "Explore Food Items", useraccount: this.useraccount);
-    })).then(
-            (context) {
-          basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
-        });
-  }
+  // void navigateToExploreFoodItemsPage(BuildContext context) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return ExploreFoodItemsPageParent(title: "Explore Food Items", useraccount: this.useraccount);
+  //   })).then(
+  //           (context) {
+  //         basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
+  //       });
+  // }
 
 
-  void navigateToCheckoutPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return CheckoutPageParent(
-          title: "Checkout", useraccount: this.useraccount);
-    })).then(
-            (context) {
-          basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
-        });
-
-  }
-  void navigateToBasketPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return BasketPageParent(title: "Basket Items", useraccount: this.useraccount);
-    })).then(
-            (context) {
-          basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
-        });
-
-  }
+  // void navigateToCheckoutPage(BuildContext context) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return CheckoutPageParent(
+  //         title: "Checkout", useraccount: this.useraccount);
+  //   })).then(
+  //           (context) {
+  //         basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
+  //       });
+  // }
+  // void navigateToBasketPage(BuildContext context) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return BasketPageParent(title: "Basket Items", useraccount: this.useraccount);
+  //   })).then(
+  //           (context) {
+  //         basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
+  //       });
+  // }
 
 }

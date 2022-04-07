@@ -19,3 +19,43 @@ Widget buildFailureUI(String message){
 Widget buildInitialUI(){
   return Container();
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// UserSideMenu ///////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+class UserSideMenu extends StatefulWidget {
+  UserSideMenu({
+    Key? key,
+    required this.handleClick
+  }) : super(key: key);
+
+  void Function(String)? handleClick;
+
+  @override
+  UserSideMenuState createState() {
+    return UserSideMenuState();
+  }
+}
+class UserSideMenuState extends State<UserSideMenu>{
+  @override
+  Widget build(BuildContext context) {
+    return
+      PopupMenuButton<String>(
+      onSelected: widget.handleClick,
+      itemBuilder: (BuildContext context) {
+        return {'Logout', 'Settings'}.map((String choice) {
+          return PopupMenuItem<String>(
+            value: choice,
+            child: Text(choice),
+          );
+        }).toList();
+      },
+    );
+  }
+}
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// UserSideMenu ///////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+

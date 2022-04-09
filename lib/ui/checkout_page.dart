@@ -9,6 +9,9 @@ import 'package:naymat_khaana/blocs/checkoutBloc/checkout_bloc.dart';
 import 'package:naymat_khaana/blocs/checkoutBloc/checkout_event.dart';
 import 'package:naymat_khaana/blocs/checkoutBloc/checkout_state.dart';
 import 'package:naymat_khaana/custom_widgets/checkout_page_widgets.dart';
+import 'package:naymat_khaana/utils/util_widgets.dart';
+import 'package:naymat_khaana/utils/validation.dart';
+import 'package:naymat_khaana/utils/navigation.dart';
 
 
 import 'home_page.dart';
@@ -98,7 +101,7 @@ class CheckoutPageState extends State<CheckoutPage>  {
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-                    navigateToHomePage(context, this.useraccount);
+                    navigateToHomePage(context, this.useraccount,"Home");
                     // navigateToHomePage(context, state.useraccount);
 
                   }
@@ -517,62 +520,6 @@ class CheckoutPageState extends State<CheckoutPage>  {
     );
   }
 
-  String? validate_address1(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
 
-  String? validate_address2(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-
-  String? validate_city(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-
-  String? validate_zipcode(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-
-  String? validate_phone(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-
-  String? validate_email(String value) {
-    value = value == null? '':value;
-    if (value == '') {return 'Value Can\'t Be Empty'; }
-    else {  return null;}
-  }
-
-  Widget buildInitialUI(){
-    return Container(); //Text('Waiting for Submission');
-  }
-  Widget buildLoadingUI(){
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-  Widget buildFailureUI(String message){
-    return Text(
-        message,
-        style: TextStyle(
-          color: Colors.red,
-        )
-    );
-  }
-
-  void navigateToHomePage(BuildContext context, UserAccount useraccount){
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-        HomePageParent(title: 'Home', useraccount: useraccount)), (Route<dynamic> route) => false);
-  }
 
 }

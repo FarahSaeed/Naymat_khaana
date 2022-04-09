@@ -87,3 +87,36 @@ String? validate_edate(String value, String sdate, String edate) {
     else if (edBeforesd) {return 'Expiry date is before submission date';}
     else {  return null;}
 }
+
+
+String? validate_address1(String value) {
+    value = value == null? '':value;
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else {  return null;}
+}
+
+String? validate_address2(String value) {
+    value = value == null? '':value;
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else {  return null;}
+}
+
+String? validate_city(String value) {
+    value = value == null? '':value;
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else {  return null;}
+}
+
+String? validate_zipcode(String value) {
+    value = value == null? '':value;
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else {  return null;}
+}
+
+String? validate_phone(String value) {
+    value = value == null? '':value;
+    if (value == '') {return 'Value Can\'t Be Empty'; }
+    else {  return null;}
+}
+
+

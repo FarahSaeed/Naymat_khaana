@@ -407,39 +407,78 @@ class BasketPageState extends State<BasketPage> {
                      //   }).toList(),
                      // ),
                    ),
-               this.numitems>0?
-               Container(
-               height: 45,
-               width: double.infinity,
-               margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
-               decoration: BoxDecoration(
-               boxShadow: [
-               BoxShadow(
-               color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
-               ],
-               borderRadius: BorderRadius.circular(5),
-               gradient: LinearGradient(
-               stops: [0.1, 0.5, 1.0],
-               colors: [
-               Colors.green,
-               Colors.lightGreen,
-               Colors.green,
-               ],
-               ),
-               ),
-               child: ElevatedButton(
-               style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
-               primary: Colors.transparent,
-               shadowColor: Colors.transparent,
-               ),
-               // style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
-               onPressed: () async {
-               navigateToCheckoutPage(context);
-               },
-               child: const Text('Check out'),
-               ),
-               )
-               :Container(),
+
+                   ValueListenableBuilder(
+                     valueListenable: basketItemsCountNotifier,
+                     builder: (BuildContext context, int nitems, Widget? child)  {
+                       return nitems==0?Container():
+                       Container(
+                         height: 45,
+                         width: double.infinity,
+                         margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
+                         decoration: BoxDecoration(
+                           boxShadow: [
+                             BoxShadow(
+                                 color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
+                           ],
+                           borderRadius: BorderRadius.circular(5),
+                           gradient: LinearGradient(
+                             stops: [0.1, 0.5, 1.0],
+                             colors: [
+                               Colors.green,
+                               Colors.lightGreen,
+                               Colors.green,
+                             ],
+                           ),
+                         ),
+                         child: ElevatedButton(
+                           style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
+                             primary: Colors.transparent,
+                             shadowColor: Colors.transparent,
+                           ),
+                           // style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+                           onPressed: () async {
+                             navigateToCheckoutPage(context);
+                           },
+                           child: const Text('Check out'),
+                         ),
+                       );
+                     },
+                   ),
+
+               // this.basketItemsCountNotifier.value==0?Container():
+               // Container(
+               // height: 45,
+               // width: double.infinity,
+               // margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
+               // decoration: BoxDecoration(
+               // boxShadow: [
+               // BoxShadow(
+               // color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
+               // ],
+               // borderRadius: BorderRadius.circular(5),
+               // gradient: LinearGradient(
+               // stops: [0.1, 0.5, 1.0],
+               // colors: [
+               // Colors.green,
+               // Colors.lightGreen,
+               // Colors.green,
+               // ],
+               // ),
+               // ),
+               // child: ElevatedButton(
+               // style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
+               // primary: Colors.transparent,
+               // shadowColor: Colors.transparent,
+               // ),
+               // // style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+               // onPressed: () async {
+               // navigateToCheckoutPage(context);
+               // },
+               // child: const Text('Check out'),
+               // ),
+               // )
+
                  ],
                );
                 },

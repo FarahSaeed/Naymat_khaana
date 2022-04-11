@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart'; // new
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:naymat_khaana/app_classes/user_account.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_bloc.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_event.dart';
 import 'package:naymat_khaana/blocs/regBloc/user_reg_state.dart';
@@ -12,11 +8,6 @@ import 'package:naymat_khaana/custom_widgets/signup_page_widgets.dart';
 import 'package:naymat_khaana/utils/navigation.dart';
 import 'package:naymat_khaana/utils/util_widgets.dart';
 import 'package:naymat_khaana/utils/validation.dart';
-
-import 'home_page.dart';
-import 'login_page.dart'; // new
-
-
 
 class SignupPageParent extends StatelessWidget {
   String title;
@@ -45,7 +36,6 @@ class SignupPage extends StatefulWidget {
 
 
 class SignupPageState extends State<SignupPage> {
-  //User user;
   String title;
 
   SignupPageState({required this.title});
@@ -53,7 +43,6 @@ class SignupPageState extends State<SignupPage> {
   TextEditingController? lnameController = TextEditingController();
   TextEditingController? dobController = TextEditingController();
   TextEditingController? emailController = TextEditingController();
-  //TextEditingController? unameController = TextEditingController();
   TextEditingController? passwordController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   UserRegBloc? userRegBloc;
@@ -89,7 +78,6 @@ class SignupPageState extends State<SignupPage> {
   String? valid_lname = null;
   String? valid_dob = null;
   String? valid_email = null;
-  //String? valid_uname = null;
   String? valid_pass = null;
 
   @override
@@ -98,13 +86,10 @@ class SignupPageState extends State<SignupPage> {
     userRegBloc = BlocProvider.of<UserRegBloc>(context);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(this.title),
-      // ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            //margin: const EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
 
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,25 +148,6 @@ class SignupPageState extends State<SignupPage> {
                   errorText:  valid_fname,
                   inputTextController: fnameController!
                 )
-                // child: TextField(
-                //   textInputAction: TextInputAction.next,
-                //   controller: fnameController,
-                //   decoration: InputDecoration(
-                //       enabledBorder: OutlineInputBorder(
-                //     borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                //   ),
-                //       focusedBorder: OutlineInputBorder(
-                //         borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                //       ),
-                //       labelStyle:   TextStyle( color: Color(0xFFCFE0BC)),
-                //     labelText: 'First name',
-                //     errorText:  valid_fname,
-                //
-                //    floatingLabelBehavior:
-                //       FloatingLabelBehavior.auto,
-                //     //floatingLabelStyle: TextStyle(color: Colors.blue),
-                //   ),
-                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
@@ -190,23 +156,6 @@ class SignupPageState extends State<SignupPage> {
                   errorText:  valid_lname,
                   inputTextController: lnameController!
               ),
-                // TextField(
-                //   textInputAction: TextInputAction.next,
-                //   controller: lnameController,
-                //   decoration: InputDecoration(
-                //     enabledBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                //     ),
-                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
-                //    // border: OutlineInputBorder(),
-                //     labelText: 'Last name',
-                //     errorText: valid_lname,
-                //   ),
-                //  // textInputAction: TextInputAction.next,
-                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
@@ -216,22 +165,6 @@ class SignupPageState extends State<SignupPage> {
                     inputTextController: dobController!,
                     focusNode: _focusNode,
                 ),
-                // child: TextField(
-                //   textInputAction: TextInputAction.next,
-                //   controller: dobController,
-                //   decoration: InputDecoration(
-                //     enabledBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                //     ),
-                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
-                //     labelText: 'Date of birth',
-                //     errorText: valid_dob,
-                //   ),
-                // focusNode: _focusNode,
-                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
@@ -241,21 +174,6 @@ class SignupPageState extends State<SignupPage> {
                     errorText:  valid_email,
                     inputTextController: emailController!
                 ),
-                // TextField(
-                //   textInputAction: TextInputAction.next,
-                //   controller: emailController,
-                //   decoration: InputDecoration(
-                //     enabledBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                //     ),
-                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
-                //     labelText: 'Email',
-                //     errorText: valid_email,
-                //   ),
-                // ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
@@ -265,23 +183,6 @@ class SignupPageState extends State<SignupPage> {
                     errorText:  valid_pass,
                     inputTextController: passwordController!
                 ),
-                // TextField(
-                //   textInputAction: TextInputAction.next,
-                //   obscureText: true,
-                //   enableSuggestions: false,
-                //   autocorrect: false,
-                //   controller: passwordController,
-                //   decoration: InputDecoration(                    enabledBorder: OutlineInputBorder(
-                //     borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
-                //   ),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Color(0xFF4EB65C), width: 1),
-                //     ),
-                //     labelStyle: TextStyle( color: Color(0xFFCFE0BC)),
-                //     labelText: 'Password',
-                //     errorText: valid_pass,
-                //   ),
-                // ),
               ),
               SignupButtonField(
                 buttonText: 'Sign up',
@@ -291,7 +192,6 @@ class SignupPageState extends State<SignupPage> {
                           valid_lname = validate_lname(lnameController!.text);
                           valid_dob = validate_dob(dobController!.text);
                           valid_email = validate_email(emailController!.text);
-                          //valid_uname = validate_uname(unameController!.text);
                           valid_pass = validate_password(passwordController!.text);
 
                           if (valid_fname == null && valid_lname == null && valid_dob == null && valid_email == null  && valid_pass == null ){
@@ -300,52 +200,6 @@ class SignupPageState extends State<SignupPage> {
                         });
                         },
               ),
-              // Container(
-              //   height: 45,
-              //   width: double.infinity,
-              //   margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
-              //   decoration: BoxDecoration(
-              //     boxShadow: [
-              //       BoxShadow(
-              //           color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
-              //     ],
-              //     borderRadius: BorderRadius.circular(5),
-              //     gradient: LinearGradient(
-              //       stops: [0.1, 0.5, 1.0],
-              //       colors: [
-              //         Colors.green,
-              //         Colors.lightGreen,
-              //         Colors.green,
-              //       ],
-              //     ),
-              //   ),
-              //
-              //   child: ElevatedButton(
-              //     style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
-              //       primary: Colors.transparent,
-              //       shadowColor: Colors.transparent,
-              //     ),
-              //
-              //     onPressed: () async {
-              //       setState(() {
-              //         valid_fname = validate_fname(fnameController!.text);
-              //         valid_lname = validate_lname(lnameController!.text);
-              //         valid_dob = validate_dob(dobController!.text);
-              //         valid_email = validate_email(emailController!.text);
-              //         //valid_uname = validate_uname(unameController!.text);
-              //         valid_pass = validate_pass(passwordController!.text);
-              //
-              //         if (valid_fname == null && valid_lname == null && valid_dob == null && valid_email == null  && valid_pass == null ){
-              //           userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: 'na', password: passwordController!.text));
-              //         }
-              //       });
-              //       },
-              //     // onPressed: () async {
-              //     //   userRegBloc!.add(SignupButtonPressedEvent(fname: fnameController!.text, lname: lnameController!.text, dob: dobController!.text, email: emailController!.text, uname: unameController!.text, password: passwordController!.text));
-              //     // },
-              //     child: const Text('Sign up'),
-              //   ),
-              // ),
               Container(
                 alignment: AlignmentDirectional.center,
                 margin: const EdgeInsets.only(top: 20.0, bottom: 10.0, left: 20.0, right: 20.0),
@@ -358,10 +212,6 @@ class SignupPageState extends State<SignupPage> {
                   child: Text('Already have an account? Login'),
                 ),
               ),
-              // ElevatedButton(
-              //   style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
-              //   onPressed: ()  {navigateToLoginPage(context);},
-              //   child: const Text('Login noww'),),
             ],
           ),
         ),

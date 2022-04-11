@@ -25,7 +25,6 @@ class LoginPageParent extends StatelessWidget {
   }
 }
 
-// Define a custom Form widget.
 class LoginPage extends StatefulWidget {
   String title;
 
@@ -53,21 +52,13 @@ class LoginPageState  extends State<LoginPage>{
   void initState(){
     loginBloc = BlocProvider.of<LoginBloc>(context);
     loginBloc!.add(InitialGoogleSignOutEvent());
-
-    //signOut(); //_googleSignIn.signInSilently();
-    super.initState();
+  super.initState();
   }
 
-  // void _togglePasswordView() {
-  //   setState(() {
-  //     _isHidden = !_isHidden;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
     GoogleSignInAccount? user = _currentUser;
-    // loginBloc = BlocProvider.of<LoginBloc>(context);
     // TODO: implement build
     return Scaffold(
 
@@ -91,10 +82,9 @@ class LoginPageState  extends State<LoginPage>{
                 ],
               ):Container(),
               Column (
-                //  mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
           children:[
-            /////////////////////////////////////////////////////////////////////////////////////////
+
               Container(
                 margin: const EdgeInsets.only(top: 200.0),
                 padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
@@ -194,45 +184,6 @@ class LoginPageState  extends State<LoginPage>{
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('problem while logging in')));
               Navigator.pop(context);
             },
-              // onPressed: (){
-              //   showDialog(
-              //     context: context,
-              //     builder: (context) {
-              //       return AlertDialog(
-              //         title: Text('Gmail address'),
-              //         content: TextField(
-              //           controller: googleemailController,
-              //           decoration: InputDecoration(hintText: "Text Field in Dialog"),
-              //         ),
-              //         actions: <Widget>[
-              //           ElevatedButton(
-              //             child: Text('CANCEL'),
-              //             onPressed: () {
-              //               Navigator.pop(context);
-              //             },
-              //           ),
-              //           ElevatedButton(
-              //             child: Text('OK'),
-              //             onPressed: () async {
-              //               // print(_textFieldController.text);
-              //               bool ue = await userRepository!.UserExist(googleemailController!.text);
-              //               if (ue == true)
-              //               {
-              //                 //SignIn();
-              //                 loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
-              //                 // LoginGoogleSignInEvent
-              //               }
-              //               else
-              //                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('problem while logging in')));
-              //
-              //               Navigator.pop(context);
-              //             },
-              //           ),
-              //         ],
-              //       );
-              //     },
-              //   );
-              // },
             )
           ],),
             ],
@@ -241,49 +192,4 @@ class LoginPageState  extends State<LoginPage>{
     );
   }
 
-  // void signOut(){
-  //   _googleSignIn.disconnect();
-  // }
-
-  // Future<void> SignIn() async{
-  //   try{
-  //     await _googleSignIn.signIn();
-  //     setState(() {
-  //       loginBloc!.add(LoginGoogleSignInEvent(email: googleemailController!.text.trim()));
-  //     });
-  //   }
-  //   catch(e){
-  //     print('error signing in due to: $e');
-  //   }
-  // }
-
-  // String? validate_email(String value) {
-  //   _counter++;
-  //   if (_counter >4) {
-  //     value = value == null? '':value;
-  //     bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
-  //   if (value == '') {return 'Value Can\'t Be Empty'; }
-  //   else if (emailValid == false ) { return 'Invalid email address';}
-  //   else {  return null;}
-  //   }
-  //   else {
-  //     return null;
-  //   }
-  // }
-
-
-
-
-
-
-//
-//   void login() async {
-//   setState(() {
-//   valid_email = validate_email(emailController!.text);
-//   valid_pass = validate_password(passwordController!.text);
-//   if (valid_email == null  && valid_pass == null ){
-//   loginBloc!.add(LoginButtonPressedEvent(email: emailController!.text.trim(), password: passwordController!.text));
-//   }
-//   });
-// }
 }

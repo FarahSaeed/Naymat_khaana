@@ -189,56 +189,61 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
       appBar: AppBar(
         title: Text(this.title),
         actions: [
-          Stack(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.shopping_cart_sharp,
-                  color: Colors.white,
-                ),
-                onPressed: (){
-                  navigateToBasketPage( context, 'Basket', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
-                },
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      // onTap: (){
-                      // } ,
-                      child: Container(
-                        height: 20.0,
-                        width: 20.0,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child:
-                        Center(
-                          child: ValueListenableBuilder(
-                            valueListenable: widget.basketItemsCountNotifier,
-                            builder: (BuildContext context, int nitems, Widget? child)  {
-                              return Text(nitems.toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              );
-                            },
-                            //child: Text('Hi')
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          UserSideMenu(handleClick: handleClick,),
+          CartItemsIcon(
+              basketItemsCountNotifier: widget.basketItemsCountNotifier,
+              handleClick: (){
+                navigateToBasketPage( context, 'Basket', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
+              }),
+          // Stack(
+          //   children: <Widget>[
+          //     IconButton(
+          //       icon: Icon(
+          //         Icons.shopping_cart_sharp,
+          //         color: Colors.white,
+          //       ),
+          //       onPressed: (){
+          //         navigateToBasketPage( context, 'Basket', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
+          //       },
+          //     ),
+          //     Positioned(
+          //       top: 0,
+          //       right: 0,
+          //       child: Stack(
+          //         children: <Widget>[
+          //           GestureDetector(
+          //             // onTap: (){
+          //             // } ,
+          //             child: Container(
+          //               height: 20.0,
+          //               width: 20.0,
+          //               decoration: const BoxDecoration(
+          //                 color: Colors.red,
+          //                 shape: BoxShape.circle,
+          //               ),
+          //               child:
+          //               Center(
+          //                 child: ValueListenableBuilder(
+          //                   valueListenable: widget.basketItemsCountNotifier,
+          //                   builder: (BuildContext context, int nitems, Widget? child)  {
+          //                     return Text(nitems.toString(),
+          //                       style: TextStyle(
+          //                         color: Colors.white,
+          //                         fontSize: 11.0,
+          //                         fontWeight: FontWeight.bold,
+          //                       ),
+          //                     );
+          //                   },
+          //                   //child: Text('Hi')
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          UserSideMenu(handleClick: handleClick),
           // PopupMenuButton<String>(
           //   onSelected: handleClick,
           //   itemBuilder: (BuildContext context) {

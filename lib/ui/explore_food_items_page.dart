@@ -16,6 +16,8 @@ import 'package:naymat_khaana/blocs/homePageBloc/home_page_event.dart';
 import 'package:naymat_khaana/blocs/homePageBloc/home_page_state.dart';
 import 'package:naymat_khaana/custom_widgets/explore_food_items_page_widgets.dart';
 import 'package:naymat_khaana/ui/food_item_desc_page.dart';
+import 'package:naymat_khaana/utils/navigation.dart';
+import 'package:naymat_khaana/utils/util_widgets.dart';
 import 'basket_page.dart';
 import 'home_page.dart';
 import 'login_page.dart'; // new
@@ -202,66 +204,74 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
             },
             icon: customIcon,
           ),
-          Stack(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.shopping_cart_sharp,
-                  color: Colors.white,
-                ),
-                onPressed: (){
-                  navigateToBasketPage(context);
-                },
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      // onTap: (){
-                      // } ,
-                      child: Container(
-                        height: 20.0,
-                        width: 20.0,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child:
-                        Center(
-                          child: ValueListenableBuilder(
-                            valueListenable: widget.basketItemsCountNotifier,
-                            builder: (BuildContext context, int nitems, Widget? child)  {
-                              return Text(nitems.toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              );
-                            },
-                            //child: Text('Hi')
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          PopupMenuButton<String>(
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {'Logout', 'Settings'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          )
+          // Stack(
+          //   children: <Widget>[
+          //     IconButton(
+          //       icon: Icon(
+          //         Icons.shopping_cart_sharp,
+          //         color: Colors.white,
+          //       ),
+          //       onPressed: (){
+          //         navigateToBasketPage(context);
+          //       },
+          //     ),
+          //     Positioned(
+          //       top: 0,
+          //       right: 0,
+          //       child: Stack(
+          //         children: <Widget>[
+          //           GestureDetector(
+          //             // onTap: (){
+          //             // } ,
+          //             child: Container(
+          //               height: 20.0,
+          //               width: 20.0,
+          //               decoration: const BoxDecoration(
+          //                 color: Colors.red,
+          //                 shape: BoxShape.circle,
+          //               ),
+          //               child:
+          //               Center(
+          //                 child: ValueListenableBuilder(
+          //                   valueListenable: widget.basketItemsCountNotifier,
+          //                   builder: (BuildContext context, int nitems, Widget? child)  {
+          //                     return Text(nitems.toString(),
+          //                       style: TextStyle(
+          //                         color: Colors.white,
+          //                         fontSize: 11.0,
+          //                         fontWeight: FontWeight.bold,
+          //                       ),
+          //                     );
+          //                   },
+          //                   //child: Text('Hi')
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          CartItemsIcon(
+              basketItemsCountNotifier: widget.basketItemsCountNotifier,
+              handleClick: (){
+                navigateToBasketPage( context, 'Basket', this.useraccount, HomePageStartedEvent(uname: useraccount.uname), this.basketBloc!) ;
+              }),
+
+          UserSideMenu(handleClick: handleClick),
+
+          // PopupMenuButton<String>(
+          //   onSelected: handleClick,
+          //   itemBuilder: (BuildContext context) {
+          //     return {'Logout', 'Settings'}.map((String choice) {
+          //       return PopupMenuItem<String>(
+          //         value: choice,
+          //         child: Text(choice),
+          //       );
+          //     }).toList();
+          //   },
+          // )
 
         ],
         centerTitle: true,
@@ -459,162 +469,162 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
   }
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
-  ListView buildNewList(List<FoodItem> foodItemList){
-    return ListView(
-      children: foodItemList.map((FoodItem fooditem) {
-        //Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-        DateTime expirationDate = DateTime.parse(fooditem.edate); //yMMMMd
-        final now = DateTime.now();
-        final bool isExpired =expirationDate.isBefore(now);
-        return Card(
-          margin: const EdgeInsets.only( top: 10, left: 25.0, right: 25.0),
-          child: ListTile(
-            contentPadding:const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom:5.0),
-            title: Padding(
-              padding: const EdgeInsets.only(bottom:8.0),
-              child: Text(capitalize(fooditem.iname),
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            subtitle:
-            Container(
-              child: Stack(
-                children: [Text.rich(TextSpan(
-                  children: <TextSpan>[
-                    new TextSpan(
-                      text: ' \$'+ fooditem.dprice +' ',
-                      style: new TextStyle(
-                        color: Colors.green, fontSize: 20.0,
-                      ),
-                    ),
-                    new TextSpan(
-                      text: '\$'+ fooditem.aprice,
-                      style: new TextStyle(
-                        color: Color(0xFF90D493),
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                    isExpired? TextSpan(
-                      text: "\n Not available " ,
-                      style:  TextStyle(
-                          color: Colors.grey,fontSize: 15.0, height: 2.0
-                      ),
-                    ):
-                    TextSpan(
-                      text: "\n Expiring " + DateFormat("MMMd").format(DateTime.parse(fooditem.edate)),
-                      style:  TextStyle(
-                          color: Colors.green, fontSize: 15.0, height: 2.0
-                      ),
-                    ),
-                  ],
-                ),
-                ),],
-              ),
-            ),
-            isThreeLine: true,
-            trailing:isExpired?null://Text("not available"):
-            IconButton(
-              icon: const Icon(Icons.add_rounded),
-              color: isExpired? Colors.grey: Colors.green,
-              onPressed: isExpired?null: () {
-                exploreFoodItemsBloc!.add(AddButtonPressedEvent(id: fooditem.id!, recieveruname: this.useraccount.uname ));
-              },
-            ),
-            leading: fooditem.imagename==""?null:ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 64,
-                maxHeight: 64,
-              ),
-              child: FutureBuilder(
-                  future: widget.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
-                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Something went wrong');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("Loading");
-                    }
-                    //return Image.asset(snapshot.data!, fit: BoxFit.cover);
-                    return Container(
-                        width: 300,
-                        height: 250,
-                        child: Image.network(snapshot.data!, fit: BoxFit.cover )
-                    );
-                  }),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
+  // ListView buildNewList(List<FoodItem> foodItemList){
+  //   return ListView(
+  //     children: foodItemList.map((FoodItem fooditem) {
+  //       //Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+  //       DateTime expirationDate = DateTime.parse(fooditem.edate); //yMMMMd
+  //       final now = DateTime.now();
+  //       final bool isExpired =expirationDate.isBefore(now);
+  //       return Card(
+  //         margin: const EdgeInsets.only( top: 10, left: 25.0, right: 25.0),
+  //         child: ListTile(
+  //           contentPadding:const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom:5.0),
+  //           title: Padding(
+  //             padding: const EdgeInsets.only(bottom:8.0),
+  //             child: Text(capitalize(fooditem.iname),
+  //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  //             ),
+  //           ),
+  //           subtitle:
+  //           Container(
+  //             child: Stack(
+  //               children: [Text.rich(TextSpan(
+  //                 children: <TextSpan>[
+  //                   new TextSpan(
+  //                     text: ' \$'+ fooditem.dprice +' ',
+  //                     style: new TextStyle(
+  //                       color: Colors.green, fontSize: 20.0,
+  //                     ),
+  //                   ),
+  //                   new TextSpan(
+  //                     text: '\$'+ fooditem.aprice,
+  //                     style: new TextStyle(
+  //                       color: Color(0xFF90D493),
+  //                       decoration: TextDecoration.lineThrough,
+  //                     ),
+  //                   ),
+  //                   isExpired? TextSpan(
+  //                     text: "\n Not available " ,
+  //                     style:  TextStyle(
+  //                         color: Colors.grey,fontSize: 15.0, height: 2.0
+  //                     ),
+  //                   ):
+  //                   TextSpan(
+  //                     text: "\n Expiring " + DateFormat("MMMd").format(DateTime.parse(fooditem.edate)),
+  //                     style:  TextStyle(
+  //                         color: Colors.green, fontSize: 15.0, height: 2.0
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               ),],
+  //             ),
+  //           ),
+  //           isThreeLine: true,
+  //           trailing:isExpired?null://Text("not available"):
+  //           IconButton(
+  //             icon: const Icon(Icons.add_rounded),
+  //             color: isExpired? Colors.grey: Colors.green,
+  //             onPressed: isExpired?null: () {
+  //               exploreFoodItemsBloc!.add(AddButtonPressedEvent(id: fooditem.id!, recieveruname: this.useraccount.uname ));
+  //             },
+  //           ),
+  //           leading: fooditem.imagename==""?null:ConstrainedBox(
+  //             constraints: BoxConstraints(
+  //               minWidth: 44,
+  //               minHeight: 44,
+  //               maxWidth: 64,
+  //               maxHeight: 64,
+  //             ),
+  //             child: FutureBuilder(
+  //                 future: widget.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
+  //                 builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+  //                   if (snapshot.hasError) {
+  //                     return Text('Something went wrong');
+  //                   }
+  //                   if (snapshot.connectionState == ConnectionState.waiting) {
+  //                     return Text("Loading");
+  //                   }
+  //                   //return Image.asset(snapshot.data!, fit: BoxFit.cover);
+  //                   return Container(
+  //                       width: 300,
+  //                       height: 250,
+  //                       child: Image.network(snapshot.data!, fit: BoxFit.cover )
+  //                   );
+  //                 }),
+  //           ),
+  //         ),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
-  ListView buildList(List<FoodItem> foodItemList) {
-    // return ListView.separated(
-    //   itemCount: 25,
-    //   //shrinkWrap: true,
-    //   separatorBuilder: (BuildContext context, int index) => Divider(),
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return ListTile(
-    //       title: Text('item $index'),
-    //     );
-    //   },
-    // );
-    return ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        separatorBuilder: (BuildContext context, int index) => Divider(),
-        itemCount: foodItemList.length,
-        itemBuilder: (context, index) {
-          final now = DateTime.now();
-          final expirationDate1 = DateTime(2021, 1, 10);
-
-          DateTime expirationDate = DateTime.parse(foodItemList[index].edate);
-          final bool isExpired = expirationDate.isBefore(now);
-          return ListTile(
-            title: Text(
-              foodItemList[index].iname,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(" Posted by: "+ foodItemList[index].useremail
-                + "\n Actual price: " + foodItemList[index].aprice
-                + "\n Discounted price: " + foodItemList[index].dprice
-                + "\n Posting date: " + foodItemList[index].sdate
-                + "\n Expiry date: " + foodItemList[index].edate
-                + "\n " + (isExpired?"Expired":"") // isExpired?"":""
-                // + "\n  Expired {$isExpired}" + (isExpired?"Expired":"") // isExpired?"":""
-                //
-                + "\n Id: " + foodItemList[index].id!),
-            isThreeLine: true,
-            onTap: isExpired?null: () {
-              String u = foodItemList[index].useremail;
-              print('foodItemList[index] is $u');
-              navigateToFoodItemPage( context,  foodItemList[index]);
-            },
-            trailing:
-            IconButton(
-              // icon: const Icon(Icons.add_shopping_cart_rounded),
-              icon: const Icon(Icons.add_rounded),
-              color: isExpired? Colors.grey: Colors.green,
-              // iconSize: 25.0,
-              onPressed: isExpired?null: () {
-                foodItemList[index].useremail;
-                print('foodItemList[index] is $foodItemList[index]');
-                exploreFoodItemsBloc!.add(AddButtonPressedEvent(id: foodItemList[index].id!, recieveruname: this.useraccount.uname ));
-              },
-            ),
-            // Icon(
-            //   Icons.favorite ,
-            //   color:  Colors.red ,
-            //  // semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
-            // ),
-          );
-        });
-  }
+  // ListView buildList(List<FoodItem> foodItemList) {
+  //   // return ListView.separated(
+  //   //   itemCount: 25,
+  //   //   //shrinkWrap: true,
+  //   //   separatorBuilder: (BuildContext context, int index) => Divider(),
+  //   //   itemBuilder: (BuildContext context, int index) {
+  //   //     return ListTile(
+  //   //       title: Text('item $index'),
+  //   //     );
+  //   //   },
+  //   // );
+  //   return ListView.separated(
+  //       physics: const AlwaysScrollableScrollPhysics(),
+  //       scrollDirection: Axis.vertical,
+  //       shrinkWrap: true,
+  //       separatorBuilder: (BuildContext context, int index) => Divider(),
+  //       itemCount: foodItemList.length,
+  //       itemBuilder: (context, index) {
+  //         final now = DateTime.now();
+  //         final expirationDate1 = DateTime(2021, 1, 10);
+  //
+  //         DateTime expirationDate = DateTime.parse(foodItemList[index].edate);
+  //         final bool isExpired = expirationDate.isBefore(now);
+  //         return ListTile(
+  //           title: Text(
+  //             foodItemList[index].iname,
+  //             style: TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //           subtitle: Text(" Posted by: "+ foodItemList[index].useremail
+  //               + "\n Actual price: " + foodItemList[index].aprice
+  //               + "\n Discounted price: " + foodItemList[index].dprice
+  //               + "\n Posting date: " + foodItemList[index].sdate
+  //               + "\n Expiry date: " + foodItemList[index].edate
+  //               + "\n " + (isExpired?"Expired":"") // isExpired?"":""
+  //               // + "\n  Expired {$isExpired}" + (isExpired?"Expired":"") // isExpired?"":""
+  //               //
+  //               + "\n Id: " + foodItemList[index].id!),
+  //           isThreeLine: true,
+  //           onTap: isExpired?null: () {
+  //             String u = foodItemList[index].useremail;
+  //             print('foodItemList[index] is $u');
+  //             navigateToFoodItemPage( context,  foodItemList[index]);
+  //           },
+  //           trailing:
+  //           IconButton(
+  //             // icon: const Icon(Icons.add_shopping_cart_rounded),
+  //             icon: const Icon(Icons.add_rounded),
+  //             color: isExpired? Colors.grey: Colors.green,
+  //             // iconSize: 25.0,
+  //             onPressed: isExpired?null: () {
+  //               foodItemList[index].useremail;
+  //               print('foodItemList[index] is $foodItemList[index]');
+  //               exploreFoodItemsBloc!.add(AddButtonPressedEvent(id: foodItemList[index].id!, recieveruname: this.useraccount.uname ));
+  //             },
+  //           ),
+  //           // Icon(
+  //           //   Icons.favorite ,
+  //           //   color:  Colors.red ,
+  //           //  // semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+  //           // ),
+  //         );
+  //       });
+  // }
 
   @override
   void dispose() {
@@ -624,22 +634,6 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
     super.dispose();
   }
 
-  Widget buildInitialUI() {
-    return Text('Waiting for Submission');
-  }
-
-  Widget buildLoadingUI() {
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget buildFailureUI(String message) {
-    return Text(message,
-        style: TextStyle(
-          color: Colors.red,
-        ));
-  }
 
   // void navigateToFoodItemPage(BuildContext context, FoodItem foodItem){
   //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
@@ -656,10 +650,6 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
         });
   }
 
-  void navigateToLoginPage(BuildContext context) {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-        LoginPageParent(title: 'Login')), (Route<dynamic> route) => false);
-  }
   void handleClick(String value) async {
     switch (value) {
       case 'Logout':
@@ -669,13 +659,13 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
         break;
     }
   }
-  void navigateToBasketPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return BasketPageParent(title: "Basket Items", useraccount: this.useraccount);
-    })).then(
-            (context) {
-          basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
-        });
-
-  }
+  // void navigateToBasketPage(BuildContext context) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return BasketPageParent(title: "Basket Items", useraccount: this.useraccount);
+  //   })).then(
+  //           (context) {
+  //         basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));
+  //       });
+  //
+  // }
 }

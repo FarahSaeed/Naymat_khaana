@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:naymat_khaana/app_classes/food_item.dart';
 import 'package:naymat_khaana/app_classes/user_account.dart';
 import 'package:naymat_khaana/blocs/basketBloc/basket_bloc.dart';
 import 'package:naymat_khaana/blocs/basketBloc/basket_event.dart';
 import 'package:naymat_khaana/ui/basket_page.dart';
 import 'package:naymat_khaana/ui/checkout_page.dart';
 import 'package:naymat_khaana/ui/explore_food_items_page.dart';
+import 'package:naymat_khaana/ui/food_item_desc_page.dart';
 import 'package:naymat_khaana/ui/home_page.dart';
 import 'package:naymat_khaana/ui/signup_page.dart';
 import 'package:naymat_khaana/ui/login_page.dart';
@@ -61,4 +63,10 @@ void navigateToBasketPage(BuildContext context, String title, UserAccount userAc
           (context) {
         basketBloc.add(HomePageStartedEvent(uname: userAccount.uname));
       });
+}
+
+void navigateToFoodItemPage(BuildContext context, FoodItem foodItem) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return FoodItemsDescPageParent(title: 'Detail', foodItem: foodItem);
+  }));
 }

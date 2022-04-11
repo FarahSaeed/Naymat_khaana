@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:naymat_khaana/app_classes/food_item.dart';
 import 'package:intl/intl.dart';
+import 'package:naymat_khaana/utils/cloud_storage.dart';
 // import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_bloc.dart';
 // import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_event.dart';
 
@@ -23,20 +24,13 @@ class BasketListView extends StatefulWidget {
   ValueNotifier<int> basketItemsCountNotifier;
   int numitems = 0;
   String useraccountname;
-  final FirebaseStorage storage = FirebaseStorage.instance;
+  //final FirebaseStorage storage = FirebaseStorage.instance;
+  CloudStorage cloudStorage = CloudStorage();
  // void Function(String) removeFromBaset;
 
   void Function(String) removeFromBasket;
 
 
-  Future<String> downloadURL({required String imagename}) async{
-    String durl = "";
-    try{
-      durl = await storage.ref('test/$imagename').getDownloadURL();
-      return durl;
-    } on FirebaseException catch (e) {print(e);}
-    return durl;
-  }
   @override
   BasketListViewState createState() {
     return BasketListViewState();
@@ -126,7 +120,7 @@ class BasketListViewState  extends State<BasketListView>{
                   maxHeight: 64,
                 ),
                 child: FutureBuilder(
-                    future: widget.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
+                    future: widget.cloudStorage.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
                     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                       if (snapshot.hasError) {
                         return Text('Something went wrong');
@@ -174,3 +168,65 @@ class BasketListViewState  extends State<BasketListView>{
 //////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// ExploreListView ////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// BasketCheckoutButton ///////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+class BasketCheckoutButton extends StatefulWidget {
+  BasketCheckoutButton({
+    Key? key,
+    required this.buttonText,
+    required this.onPressed,
+
+  }) : super(key: key);
+
+  String buttonText;
+  void Function()? onPressed;
+  @override
+  BasketCheckoutButtonState createState() {
+    return BasketCheckoutButtonState();
+  }
+}
+class BasketCheckoutButtonState  extends State<BasketCheckoutButton>{
+  @override
+  Widget build(BuildContext context) {
+    return
+      Container(
+        height: 45,
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.white60, offset: Offset(0, 1), blurRadius: 0.5)
+          ],
+          borderRadius: BorderRadius.circular(5),
+          gradient: LinearGradient(
+            stops: [0.1, 0.5, 1.0],
+            colors: [
+              Colors.green,
+              Colors.lightGreen,
+              Colors.green,
+            ],
+          ),
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20),
+            primary: Colors.transparent,
+            shadowColor: Colors.transparent,
+          ),
+          // style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+          onPressed: widget.onPressed,
+          child: const Text('Check out'),
+        ),
+      );
+  }
+}
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////// BasketCheckoutButton ///////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+

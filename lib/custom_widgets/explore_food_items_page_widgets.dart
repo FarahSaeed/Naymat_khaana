@@ -5,6 +5,7 @@ import 'package:naymat_khaana/app_classes/food_item.dart';
 import 'package:intl/intl.dart';
 import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_bloc.dart';
 import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_event.dart';
+import 'package:naymat_khaana/utils/cloud_storage.dart';
 
 //////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// ExploreListView ////////////////////////////////
@@ -19,16 +20,17 @@ class ExploreListView extends StatefulWidget {
   List<FoodItem> foodItemList;
   ExploreFoodItemsBloc exploreFoodItemsBloc;
   String useraccountname;
-  final FirebaseStorage storage = FirebaseStorage.instance;
-
-  Future<String> downloadURL({required String imagename}) async{
-    String durl = "";
-    try{
-      durl = await storage.ref('test/$imagename').getDownloadURL();
-      return durl;
-    } on FirebaseException catch (e) {print(e);}
-    return durl;
-  }
+  CloudStorage cloudStorage = CloudStorage();
+  // final FirebaseStorage storage = FirebaseStorage.instance;
+  //
+  // Future<String> downloadURL({required String imagename}) async{
+  //   String durl = "";
+  //   try{
+  //     durl = await storage.ref('test/$imagename').getDownloadURL();
+  //     return durl;
+  //   } on FirebaseException catch (e) {print(e);}
+  //   return durl;
+  // }
   @override
   ExploreListViewState createState() {
     return ExploreListViewState();
@@ -109,7 +111,7 @@ class ExploreListViewState  extends State<ExploreListView>{
                 maxHeight: 64,
               ),
               child: FutureBuilder(
-                  future: widget.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
+                  future: widget.cloudStorage.downloadURL(imagename: fooditem.imagename!), //'scaled_image_picker1176476598179497756.jpg'),
                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                     if (snapshot.hasError) {
                       return Text('Something went wrong');

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,8 +18,11 @@ import 'package:naymat_khaana/utils/cloud_storage.dart';
 import 'package:naymat_khaana/utils/navigation.dart';
 import 'package:naymat_khaana/utils/util_widgets.dart';
 import 'package:naymat_khaana/utils/validation.dart';
-
+import 'dart:async';
+import 'dart:io';
+import 'package:google_ml_kit/google_ml_kit.dart';
 import 'home_page.dart';
+import 'package:intl/intl.dart';
 
 class SubmitFoodItemPageParent extends StatelessWidget {
   String title;
@@ -66,7 +70,7 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
   TextEditingController? dpriceController = TextEditingController();
   TextEditingController? sdateController = TextEditingController();
   TextEditingController? edateController = TextEditingController();
-
+  String scannedText = "";
   String? valid_iname = null;
   String? valid_aprice = null;
   String? valid_dprice = null;
@@ -79,8 +83,47 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
  var _image;
   XFile? image;
 
+  //the path of the image stored in the device
+// String? _imagePath;
+TextDetector? _textDetector;
+
   FocusNode? _focusNodeDprice; // focus management dob
   FocusNode? _focusNodeAprice; // focus management dob
+
+  Future<String> recongnizeText(XFile imageXFile) async
+  {
+    final inputImage = InputImage.fromFilePath(imageXFile.path);
+    final textDetector = GoogleMlKit.vision.textDetector();
+    RecognisedText recognisedText = await textDetector.processImage(inputImage);
+    await textDetector.close();
+    String scannedString = "";
+    for (TextBlock block in recognisedText.blocks){
+      for (TextLine line in block.lines){
+        // scannedString = scannedString+line.text+"\n";
+        try {
+          print(DateFormat('MM/dd/yyyy').parse(line.text));
+
+          var originalFormat = DateFormat('MM/dd/yyyy').parse(line.text);
+          var outputFormat = DateFormat('yyyy-MM-dd');
+          var date2 = outputFormat.format(originalFormat);
+          date2.toString();
+          scannedString = date2.toString(); // line.text;
+        } catch (e) {
+
+        }
+
+  // if(DateTime.tryParse(line.text) != null){
+  //   scannedString = line.text;
+  // }
+
+  // DateFormat('MM-dd-yyyy').parse('06-09-2019');
+      }
+    }
+   // setState(() {});
+    return scannedString;
+  }
+
+
 
   @override
   void dispose() {
@@ -89,8 +132,24 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
     _focusNodeAprice!.dispose();
   }
 
+  void _recognizTexts(String _imagePath) async {
+    // Creating an InputImage object using the image path
+    final inputImage = InputImage.fromFilePath(_imagePath);
+    // Retrieving the RecognisedText from the InputImage
+    final text = await _textDetector!.processImage(inputImage);
+    // Finding text String(s)
+    for (TextBlock block in text.blocks) {
+      for (TextLine line in block.lines) {
+        print('text: ${line.text}');
+      }
+    }
+  }
+
   @override
   void initState() {
+    // Initializing the text detector
+    _textDetector = GoogleMlKit.vision.textDetector();
+
     super.initState();
     _focusNodeDprice = new FocusNode();
     _focusNodeAprice = new FocusNode();
@@ -301,21 +360,21 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                 margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
                 child:
 
-                SubmitInputTextField(
-                  labelText: 'Submission date',
-                  errorText: valid_sdate,
-                  inputTextController: sdateController,
-                  onTap: () async {
-                    DateTime? picked = (await showDatePicker(
-                        helpText: "Selection date",
-                        context: context,
-                        initialDate: selectedDate,
-                        firstDate: DateTime.now(), //.subtract(Duration(days: 1)),
-                        lastDate: DateTime(2101)));
-                    sdateController!.text = (picked == null)?"": "${picked.toLocal()}".split(' ')[0];
-                  },
-                ),
+                    SubmitInputTextField(
+                      labelText: 'Submission date',
+                      errorText: valid_sdate,
+                      inputTextController: sdateController,
 
+                      onTap: () async {
+                        DateTime? picked = (await showDatePicker(
+                            helpText: "Selection date",
+                            context: context,
+                            initialDate: selectedDate,
+                            firstDate: DateTime.now(), //.subtract(Duration(days: 1)),
+                            lastDate: DateTime(2101)));
+                        sdateController!.text = (picked == null)?"": "${picked.toLocal()}".split(' ')[0];
+                      },
+                    ),
               ),
 
               Container(
@@ -326,6 +385,100 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                   labelText: 'Expiraiton date',
                   errorText: valid_edate,
                   inputTextController: edateController,
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                  margin: const EdgeInsets.only( left: 5.0, right: 5.0),
+                          child: GestureDetector(
+                              child:Icon(Icons.camera_alt),
+                              onTap: () async {
+                                ImagePicker picker = ImagePicker();
+                                var source = ImageSource.camera;
+                                XFile? sdateImage = await picker.pickImage(
+                                    source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                                setState(() async {
+                                  // Fi_image = File(sdateImage!.path);
+                                  // scannedText= recongnizeText(sdateImage!) as String;
+                                  edateController!.text = await recongnizeText(sdateImage!);
+                                  //edateController!.text = sdateController!.text;
+                                });
+                                setState(() {});
+                              }
+                            // (){
+                            // showDialog<String>(
+                            //   context: context,
+                            //   builder: (BuildContext context) => AlertDialog(
+                            //     title: const Text('Invalid price'),
+                            //     content: const Text('Actual price should be higher than discounted price.'),
+                            //     actions: <Widget>[
+                            //       TextButton(
+                            //         onPressed: ()
+                            //         {
+                            //           Navigator.pop(context, 'Update Actual price');
+                            //         },
+                            //         child: const Text('Update Actual price'),
+                            //       ),
+                            //       TextButton(
+                            //         onPressed: (){
+                            //           Navigator.pop(context, 'Update Discounted price');
+                            //         },
+                            //         child: const Text('Update Discounted price'),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // );
+                            // },
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 5.0, right: 10.0),
+                          child: GestureDetector(
+                              child:Icon(Icons.image),
+                              onTap: () async {
+                                ImagePicker picker = ImagePicker();
+                                var source = ImageSource.gallery;
+                                XFile? sdateImage = await picker.pickImage(
+                                    source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                                setState(() async {
+                                  // Fi_image = File(sdateImage!.path);
+                                  // scannedText= recongnizeText(sdateImage!) as String;
+                                  edateController!.text = await recongnizeText(sdateImage!);
+                                  //edateController!.text = sdateController!.text;
+                                });
+                                setState(() {});
+                              }
+                            // (){
+                            // showDialog<String>(
+                            //   context: context,
+                            //   builder: (BuildContext context) => AlertDialog(
+                            //     title: const Text('Invalid price'),
+                            //     content: const Text('Actual price should be higher than discounted price.'),
+                            //     actions: <Widget>[
+                            //       TextButton(
+                            //         onPressed: ()
+                            //         {
+                            //           Navigator.pop(context, 'Update Actual price');
+                            //         },
+                            //         child: const Text('Update Actual price'),
+                            //       ),
+                            //       TextButton(
+                            //         onPressed: (){
+                            //           Navigator.pop(context, 'Update Discounted price');
+                            //         },
+                            //         child: const Text('Update Discounted price'),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // );
+                            // },
+                          ),
+                        ),
+
+                      ]
+                  ),
                   onTap: () async {
                 DateTime? picked = (await showDatePicker(
                 helpText: "Expiration date",
@@ -338,6 +491,22 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                 ),
 
               ),
+              Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(left: 30.0),
+                child: TextButton(
+                  onPressed: () async {},
+                  child: const Text('Add product photo', style: TextStyle(fontSize: 17),),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.camera_alt),
+                tooltip: 'Take a photo',
+                onPressed: () {
+
+                },
+              ),
+
 
               Container(
                 alignment: Alignment.center,
@@ -347,18 +516,32 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                     var source = ImageSource.gallery;
                     image = await picker.pickImage(
                         source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
-
                      setState(() {
                      _image = File(image!.path);
-
+                     recongnizeText(image!);
                      });
                   },
-                  child: const Text('Upload Image', style: TextStyle(fontSize: 17),),
+                  child: const Text('Upload Image from gallery', style: TextStyle(fontSize: 17),),
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: TextButton(
+                  onPressed: () async {
+                    ImagePicker picker = ImagePicker();
+                    var source = ImageSource.camera;
+                    image = await picker.pickImage(
+                        source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                    setState(() async {
+                      _image = File(image!.path);
+                      scannedText = await recongnizeText(image!);
+                    });
+                  },
+                  child: const Text('Upload Image from camera', style: TextStyle(fontSize: 17),),
                 ),
               ),
 
               _image== null?Container():
-
               Container(
                 margin: const EdgeInsets.only(top: 0.0, bottom: 10.0, left: 20.0, right: 20.0),
 
@@ -368,6 +551,9 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
                   fit: BoxFit.fitHeight,
                 ),
               ),
+              _image== null?Container():
+                  Text(scannedText),
+
               SubmitButtonField(
                   buttonText: 'Submit',
                     onPressed: () async {

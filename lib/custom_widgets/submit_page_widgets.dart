@@ -13,12 +13,14 @@ class SubmitInputTextField extends StatefulWidget {
     required this.inputTextController,
     this.focusNode,
     this.onSubmitted,
-    this.onTap
+    this.onTap,
+    this.suffixIcon
   }) : super(key: key);
 
   String labelText;
   String? errorText;
   FocusNode? focusNode;
+  Widget? suffixIcon;
   TextEditingController? inputTextController;
   void Function(String)? onSubmitted;
   void Function()? onTap;
@@ -31,9 +33,11 @@ class SubmitInputTextFieldState  extends State<SubmitInputTextField>{
   @override
   Widget build(BuildContext context) {
     return TextField(
+
       textInputAction: TextInputAction.next,
       controller: widget.inputTextController,
       decoration: InputDecoration(
+        suffixIcon: widget.suffixIcon == null? null:widget.suffixIcon,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color(0xFFC5C9C7), width: 1),
         ),
@@ -47,6 +51,7 @@ class SubmitInputTextFieldState  extends State<SubmitInputTextField>{
         labelText: widget.labelText,
         errorText: widget.errorText,
       ),
+
       onSubmitted: widget.onSubmitted,
       onTap: widget.onTap
     );
@@ -82,6 +87,7 @@ class SubmitButtonFieldState  extends State<SubmitButtonField>{
     return Container(
         height: 45,
         width: double.infinity,
+
         margin: const EdgeInsets.only(top: 15.0, bottom: 10.0, left: 20.0, right: 20.0),
         decoration: BoxDecoration(
           boxShadow: [

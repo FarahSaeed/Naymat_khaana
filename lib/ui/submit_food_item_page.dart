@@ -80,8 +80,9 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
   SubmitFoodItemBloc? submitFoodItemBloc;
   HomePageBloc? homePageBloc;
   BasketBloc? basketBloc;
- var _image;
+ var _image= null;
   XFile? image;
+  List<XFile>? imageFileList = [];
 
   //the path of the image stored in the device
 // String? _imagePath;
@@ -97,22 +98,61 @@ TextDetector? _textDetector;
     RecognisedText recognisedText = await textDetector.processImage(inputImage);
     await textDetector.close();
     String scannedString = "";
+    bool dateFound = false;
+    DateTime? originalFormat;
+    List<String> dateFormatsList =["MMddyy",'MM/dd/yyyy', 'MM-dd-yyyy',"MMM-yyyy","MMM-yy","MMMM-yy"] ;
     for (TextBlock block in recognisedText.blocks){
       for (TextLine line in block.lines){
         // scannedString = scannedString+line.text+"\n";
-        try {
-          print(DateFormat('MM/dd/yyyy').parse(line.text));
+        List<String> lineStr = [line.text];
 
-          var originalFormat = DateFormat('MM/dd/yyyy').parse(line.text);
-          var outputFormat = DateFormat('yyyy-MM-dd');
-          var date2 = outputFormat.format(originalFormat);
-          date2.toString();
-          scannedString = date2.toString(); // line.text;
-        } catch (e) {
+        if (line.text.toLowerCase().contains('exp')){
+          lineStr = line.text.split(" ");
 
         }
+        for (String strcandidate in lineStr) {
+        for (String format in dateFormatsList ) {
+          try {
+            // print(DateFormat('MM/dd/yyyy').parse(line.text));
+            originalFormat = DateFormat(format).parse(strcandidate);
+            dateFound = true;
+          } catch (e) {}
+          try{
+          if (!dateFound){
+            var re = RegExp(
+              r'^'
+              r'(?<month>[0-9]{1,2})'
+              // r'/'
+              r'(?<day>[0-9]{1,2})'
+              // r'/'
+              r'(?<year>[0-9]{1,2})'
+              r'$',
+            );
+            var match = re.firstMatch(strcandidate);
+            if (match == null) {
+              throw FormatException('Unrecognized date format');
+            }
+            dateFound = true;
+            originalFormat = DateTime(2000+
+              int.parse(match.namedGroup('year')!),
+              int.parse(match.namedGroup('month')!),
+              int.parse(match.namedGroup('day')!),
+            );
+          }
+          } catch (e) {}
+          if (dateFound) {
+            var outputFormat = DateFormat('yyyy-MM-dd');
+            var date2 = outputFormat.format(originalFormat!);
+            date2.toString();
+            scannedString = date2.toString();
+            break;
+          }
+        }
+        if (dateFound) break;
+        }
+        if (dateFound) break;
 
-  // if(DateTime.tryParse(line.text) != null){
+        // if(DateTime.tryParse(line.text) != null){
   //   scannedString = line.text;
   // }
 
@@ -499,48 +539,112 @@ TextDetector? _textDetector;
                   child: const Text('Add product photo', style: TextStyle(fontSize: 17),),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.camera_alt),
-                tooltip: 'Take a photo',
-                onPressed: () {
 
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.camera_alt),
+                    tooltip: 'Select from gallery',
+                    onPressed: () async {
+                      ImagePicker imagePicker = ImagePicker();
+                      imageFileList!.clear();
+                      final List<XFile>? selectedImages = await
+                      imagePicker.pickMultiImage();
+                      if (selectedImages!.isNotEmpty) {
+                        imageFileList!.addAll(selectedImages);
+                      }
+                      print("Image List Length:" + imageFileList!.length.toString());
+                      setState((){});
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.camera_alt),
+                    tooltip: 'Select from gallery',
+                    onPressed: () async {
+                      ImagePicker picker = ImagePicker();
+                      var source = ImageSource.camera;
+                      image = await picker.pickImage(
+                          source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                      setState(() {
+                        _image = File(image!.path);
+                        recongnizeText(image!);
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.image),
+                    tooltip: 'Select from gallery',
+                    onPressed: () async {
+                      ImagePicker picker = ImagePicker();
+                      var source = ImageSource.gallery;
+                      image = await picker.pickImage(
+                          source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                      setState(() {
+                        _image = File(image!.path);
+                        recongnizeText(image!);
+                      });
+                    },
+                  ),
+                ],
               ),
 
 
+
+
+              // Container(
+              //   alignment: Alignment.center,
+              //   child: TextButton(
+              //     onPressed: () async {
+              //       ImagePicker picker = ImagePicker();
+              //       var source = ImageSource.gallery;
+              //       image = await picker.pickImage(
+              //           source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+              //        setState(() {
+              //        _image = File(image!.path);
+              //        recongnizeText(image!);
+              //        });
+              //     },
+              //     child: const Text('Upload Image from gallery', style: TextStyle(fontSize: 17),),
+              //   ),
+              // ),
+              // Container(
+              //   alignment: Alignment.center,
+              //   child: TextButton(
+              //     onPressed: () async {
+              //       ImagePicker picker = ImagePicker();
+              //       var source = ImageSource.camera;
+              //       image = await picker.pickImage(
+              //           source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+              //       setState(() async {
+              //         _image = File(image!.path);
+              //         scannedText = await recongnizeText(image!);
+              //       });
+              //     },
+              //     child: const Text('Upload Image from camera', style: TextStyle(fontSize: 17),),
+              //   ),
+              // ),
+              imageFileList== null?Container():
               Container(
-                alignment: Alignment.center,
-                child: TextButton(
-                  onPressed: () async {
-                    ImagePicker picker = ImagePicker();
-                    var source = ImageSource.gallery;
-                    image = await picker.pickImage(
-                        source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
-                     setState(() {
-                     _image = File(image!.path);
-                     recongnizeText(image!);
-                     });
-                  },
-                  child: const Text('Upload Image from gallery', style: TextStyle(fontSize: 17),),
-                ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: TextButton(
-                  onPressed: () async {
-                    ImagePicker picker = ImagePicker();
-                    var source = ImageSource.camera;
-                    image = await picker.pickImage(
-                        source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
-                    setState(() async {
-                      _image = File(image!.path);
-                      scannedText = await recongnizeText(image!);
-                    });
-                  },
-                  child: const Text('Upload Image from camera', style: TextStyle(fontSize: 17),),
-                ),
-              ),
+                margin: const EdgeInsets.only(top: 0.0, bottom: 10.0, left: 20.0, right: 20.0),
 
+                child: GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: imageFileList!.length,
+                    gridDelegate:
+                    SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Image.file(File(imageFileList![index].path),
+                        fit: BoxFit.cover,);
+                    }),
+                // child: Image.file(
+                //   _image,
+                //
+                //   fit: BoxFit.fitHeight,
+                // ),
+              ),
               _image== null?Container():
               Container(
                 margin: const EdgeInsets.only(top: 0.0, bottom: 10.0, left: 20.0, right: 20.0),

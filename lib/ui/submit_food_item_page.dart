@@ -83,7 +83,8 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage>  {
  var _image= null;
   XFile? image;
   List<XFile>? imageFileList = [];
-
+  late PageController _pageController;
+  int activePage = 1;
   //the path of the image stored in the device
 // String? _imagePath;
 TextDetector? _textDetector;
@@ -193,10 +194,24 @@ TextDetector? _textDetector;
     super.initState();
     _focusNodeDprice = new FocusNode();
     _focusNodeAprice = new FocusNode();
+    _pageController = PageController(viewportFraction: 0.8);
+
   }
   void setFocusDprice() {FocusScope.of(context).requestFocus(_focusNodeDprice);}
   void setFocusAprice() {FocusScope.of(context).requestFocus(_focusNodeAprice);}
 
+  List<Widget> indicators(imagesLength,currentIndex) {
+    return List<Widget>.generate(imagesLength, (index) {
+      return Container(
+        margin: EdgeInsets.all(3),
+        width: 5,
+        height: 5,
+        decoration: BoxDecoration(
+            color: currentIndex == index ? Colors.green : Color(0xFF97E269),
+            shape: BoxShape.circle),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -545,7 +560,7 @@ TextDetector? _textDetector;
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.camera_alt),
+                    icon: const Icon(Icons.image),
                     tooltip: 'Select from gallery',
                     onPressed: () async {
                       ImagePicker imagePicker = ImagePicker();
@@ -573,20 +588,21 @@ TextDetector? _textDetector;
                       });
                     },
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.image),
-                    tooltip: 'Select from gallery',
-                    onPressed: () async {
-                      ImagePicker picker = ImagePicker();
-                      var source = ImageSource.gallery;
-                      image = await picker.pickImage(
-                          source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
-                      setState(() {
-                        _image = File(image!.path);
-                        recongnizeText(image!);
-                      });
-                    },
-                  ),
+                  //for single image upload
+                  // IconButton(
+                  //   icon: const Icon(Icons.image),
+                  //   tooltip: 'Select from gallery',
+                  //   onPressed: () async {
+                  //     ImagePicker picker = ImagePicker();
+                  //     var source = ImageSource.gallery;
+                  //     image = await picker.pickImage(
+                  //         source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                  //     setState(() {
+                  //       _image = File(image!.path);
+                  //       recongnizeText(image!);
+                  //     });
+                  //   },
+                  // ),
                 ],
               ),
 
@@ -625,27 +641,44 @@ TextDetector? _textDetector;
               //     child: const Text('Upload Image from camera', style: TextStyle(fontSize: 17),),
               //   ),
               // ),
-              imageFileList== null?Container():
+
+              imageFileList==null?Container():
               Container(
                 margin: const EdgeInsets.only(top: 0.0, bottom: 10.0, left: 20.0, right: 20.0),
-
-                child: GridView.builder(
-                    shrinkWrap: true,
+                width: double.infinity,
+                height: 300.0,
+                child: PageView.builder(
                     itemCount: imageFileList!.length,
-                    gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Image.file(File(imageFileList![index].path),
-                        fit: BoxFit.cover,);
+                    pageSnapping: true,
+                  controller: _pageController,
+                  onPageChanged: (page) {
+                  setState(() {
+                  activePage = page;
+                  });},
+                    itemBuilder: (context,pagePosition){
+                      return Container(
+                          margin: EdgeInsets.all(10),
+                          child: Image.file(File(imageFileList![pagePosition].path),fit: BoxFit.cover,)); //Image.network(images[pagePosition]));
                     }),
-                // child: Image.file(
-                //   _image,
-                //
-                //   fit: BoxFit.fitHeight,
-                // ),
               ),
-              _image== null?Container():
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: indicators(imageFileList!.length,activePage)),
+              // imageFileList== null?Container():
+              // Container(
+              //   margin: const EdgeInsets.only(top: 0.0, bottom: 10.0, left: 20.0, right: 20.0),
+              //   child: GridView.builder(
+              //       shrinkWrap: true,
+              //       itemCount: imageFileList!.length,
+              //       gridDelegate:
+              //       SliverGridDelegateWithFixedCrossAxisCount(
+              //           crossAxisCount: 3),
+              //       itemBuilder: (BuildContext context, int index) {
+              //         return Image.file(File(imageFileList![index].path),
+              //           fit: BoxFit.cover,);
+              //       }),
+              // ),
+              (_image== null || (imageFileList != null && imageFileList!.length>=1) )?Container():
               Container(
                 margin: const EdgeInsets.only(top: 0.0, bottom: 10.0, left: 20.0, right: 20.0),
 
@@ -655,8 +688,8 @@ TextDetector? _textDetector;
                   fit: BoxFit.fitHeight,
                 ),
               ),
-              _image== null?Container():
-                  Text(scannedText),
+              // _image== null?Container():
+              //     Text(scannedText),
 
               SubmitButtonField(
                   buttonText: 'Submit',

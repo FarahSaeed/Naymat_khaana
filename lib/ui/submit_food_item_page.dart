@@ -703,18 +703,16 @@ TextDetector? _textDetector;
                       valid_sdate = validate_sdate(sdateController!.text);
                       valid_edate = validate_edate(edateController!.text,sdateController!.text,edateController!.text);
 
-                      if (_image == null)
+                      if (imageFileList!.length == 0) //(_image == null)
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('no image was selected')));
                       else {
-                        widget.cloudStorage.UploadFile(filePath: image!.path, fileName: image!.name).then((value) => print('done'));
+                        widget.cloudStorage.UploadFile(filePath: imageFileList![0].path, fileName: imageFileList![0].name).then((value) => print('done'));
                       }
                       if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
-                        submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: image!.name ));
-
+                        submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: imageFileList![0].name ));
                       }
                       });},
               ),
-
 
             Container(
 

@@ -65,8 +65,17 @@ void navigateToBasketPage(BuildContext context, String title, UserAccount userAc
       });
 }
 
-void navigateToFoodItemPage(BuildContext context, FoodItem foodItem) {
+// void navigateToFoodItemPage(BuildContext context, FoodItem foodItem) {
+//   Navigator.push(context, MaterialPageRoute(builder: (context) {
+//     return FoodItemsDescPageParent(title: 'Detail', foodItem: foodItem);
+//   }));
+// }
+
+void navigateToFoodItemPage(BuildContext context, FoodItem foodItem, BasketBloc basketBloc, String useraccountname) {
   Navigator.push(context, MaterialPageRoute(builder: (context) {
     return FoodItemsDescPageParent(title: 'Detail', foodItem: foodItem);
-  }));
+  })).then(
+          (context) {
+        basketBloc.add(HomePageStartedEvent(uname: useraccountname));
+      });
 }

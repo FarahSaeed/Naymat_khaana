@@ -23,7 +23,9 @@ String durl = "";
     try{
       durl = await storage.ref('test/$imagename').getDownloadURL();
       return durl;
-    } on FirebaseException catch (e) {print(e);}
+    } on FirebaseException catch (e) {
+      print(e);
+    }
     return durl;
   }
 

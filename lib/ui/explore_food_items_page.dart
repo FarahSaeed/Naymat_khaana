@@ -290,7 +290,7 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
                       String sdate = data['submit_date'];
                       String edate = data['exp_date'];
                       String useremail = data['user_email']==null?'na':data['user_email'];
-                      String imagename = data['imagename']==null? "":data['imagename'];
+                      List<String> imagename = data['imagename']==null? [""]:data['imagename'] is String? [data['imagename']] :List<String>.from(data['imagename']) ;
 
                       if (this.searchField == "" || iname.contains(this.searchField)) {
                         foodItemsList.add(FoodItem(iname: iname,
@@ -309,6 +309,7 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
                       ExploreListView(
                       useraccountname: this.useraccount.uname,
                       exploreFoodItemsBloc: exploreFoodItemsBloc!,
+                      basketBloc: basketBloc!,
                       foodItemList: foodItemsList,
                     );
                   },

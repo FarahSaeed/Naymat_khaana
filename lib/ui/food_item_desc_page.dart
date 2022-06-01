@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart'; // new
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naymat_khaana/app_classes/food_item.dart';
 import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_bloc.dart';
+import 'package:naymat_khaana/utils/cloud_storage.dart';
 import 'home_page.dart';
 import 'login_page.dart'; // new
 // new
@@ -28,6 +29,7 @@ class FoodItemsDescPage extends StatefulWidget {
   //User user;
   String title;
   FoodItem foodItem;
+  CloudStorage cloudStorage = CloudStorage();
   FoodItemsDescPage({required this.title ,required this.foodItem});
   @override
   FoodItemsDescPageState createState() {
@@ -141,7 +143,30 @@ class FoodItemsDescPageState extends State<FoodItemsDescPage> {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
+            children: <Widget>[foodItem.imagename==""?Container():
+              ConstrainedBox(constraints: BoxConstraints(
+                minWidth: 44,
+                minHeight: 44,
+                maxWidth: 64,
+                maxHeight: 500,
+              ),
+                child: FutureBuilder(
+                    future: widget.cloudStorage.downloadURL(imagename: foodItem.imagename![0]), //'scaled_image_picker1176476598179497756.jpg'),
+                    builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Something went wrong');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text("Loading");
+                      }
+                      //return Image.asset(snapshot.data!, fit: BoxFit.cover);
+                      return Container(
+                          width: 300,
+                          height: 250,
+                          child: Image.network(snapshot.data!, fit: BoxFit.cover )
+                      );
+                    }),
+              ),
           Text(
           this.foodItem.iname,
             style: TextStyle(

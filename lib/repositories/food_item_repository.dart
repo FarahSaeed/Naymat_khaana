@@ -65,9 +65,9 @@ class FoodItemRepository {
         String sdate = data['submit_date'];
         String edate = data['exp_date'];
         String useremail = data['user_email']==null?'na':data['user_email'];
-        String imagename = data['imagename']==null? "":data['imagename'];
+        String imagename = data['imagename']==null? "": data['imagename'] is String? data['imagename']:data['imagename'][0] ;
 
-        this.foodItemsList.add(FoodItem(iname: iname, uname: uname, aprice: aprice, dprice: dprice, sdate: sdate, edate: edate, useremail: useremail, id: document.id, imagename: imagename));
+        this.foodItemsList.add(FoodItem(iname: iname, uname: uname, aprice: aprice, dprice: dprice, sdate: sdate, edate: edate, useremail: useremail, id: document.id, imagename: [imagename]));
       });
 
       this.foodItemsList.sort((a, b) => DateTime.parse(b.edate).compareTo(DateTime.parse(a.edate)) );
@@ -91,7 +91,7 @@ class FoodItemRepository {
         'user_email': foodItem.useremail, // 42
         'receiever': foodItem.receiver,
         'taken': foodItem.taken,
-        'imagename':foodItem.imagename
+        'imagename':foodItem.imagename!
       })
           .then((value) => print("Food item submitted"))
           .catchError((error) => throw Exception(error.toString()));

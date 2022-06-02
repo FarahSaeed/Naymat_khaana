@@ -711,9 +711,10 @@ TextDetector? _textDetector;
                           widget.cloudStorage.UploadFile(filePath: imageFileList![i].path, fileName: imageFileList![i].name).then((value) => print('done'));
                           imageSetList.add(imageFileList![i].name);
                         }
-                      }
-                      if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
-                        submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: imageFileList![0].name ));
+
+                        if (valid_iname == null && valid_aprice == null && valid_dprice == null && valid_sdate == null && valid_edate == null ){
+                          submitFoodItemBloc!.add(SubmitButtonPressedEvent(iname: inameController!.text, uname: useraccount.uname, aprice: apriceController!.text, dprice: dpriceController!.text, sdate: sdateController!.text, edate: edateController!.text, useremail: (this.useraccount.email), imagename: imageSetList ));
+                        }
                       }
                       });},
               ),

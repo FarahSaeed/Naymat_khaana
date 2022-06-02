@@ -23,7 +23,7 @@ class SubmitFoodItemBloc extends Bloc<SubmitFoodItemEvent,SubmitFoodItemState>{
     if (event is SubmitButtonPressedEvent){
       try {
         yield SubmissionLoading();
-        FoodItem foodItem = FoodItem(iname: event.iname, uname: event.uname, aprice: event.aprice, dprice: event.dprice, sdate: event.sdate, edate: event.edate, useremail: event.useremail, imagename: [event.imagename]);
+        FoodItem foodItem = FoodItem(iname: event.iname, uname: event.uname, aprice: event.aprice, dprice: event.dprice, sdate: event.sdate, edate: event.edate, useremail: event.useremail, imagename: event.imagename);
 
         var result =  await this.foodItemRepository!.submitItem(foodItem);
 

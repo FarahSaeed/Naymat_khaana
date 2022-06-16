@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:naymat_khaana/app_classes/food_item.dart';
 import 'package:intl/intl.dart';
+import 'package:naymat_khaana/app_classes/user_account.dart';
+import 'package:naymat_khaana/blocs/basketBloc/basket_bloc.dart';
 import 'package:naymat_khaana/utils/cloud_storage.dart';
+import 'package:naymat_khaana/utils/navigation.dart';
 // import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_bloc.dart';
 // import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_event.dart';
 
@@ -17,9 +20,14 @@ class BasketListView extends StatefulWidget {
     required this.useraccountname,
     required this.snapshot,
     required this.basketItemsCountNotifier,
-    required this.removeFromBasket
+    required this.removeFromBasket,
+    required this.basketBloc,
+    required this.useraccount
   }) : super(key: key);
 
+
+  BasketBloc basketBloc;
+  UserAccount useraccount;
   AsyncSnapshot<QuerySnapshot> snapshot;
   ValueNotifier<int> basketItemsCountNotifier;
   int numitems = 0;
@@ -47,7 +55,29 @@ class BasketListViewState  extends State<BasketListView>{
       shrinkWrap: true,
       children: widget.snapshot.data!.docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-        FoodItem fooditem = FoodItem(iname: data['item_name'], uname: data['username'], aprice: data['actual_price'], dprice: data['discount_price'], sdate: data['submit_date'], edate: data['exp_date'], useremail: data['user_email'], imagename: data['imagename']==null? "":data['imagename']);
+
+        String iname = data['item_name'];
+        String uname = data['username'];
+        String aprice = data['actual_price'];
+        String dprice = data['discount_price'];
+        String sdate = data['submit_date'];
+        String edate = data['exp_date'];
+        String useremail = data['user_email']==null?'na':data['user_email'];
+        List<String> imagename = data['imagename']==null? [""]:data['imagename'] is String? [data['imagename']] :List<String>.from(data['imagename']) ;
+
+        FoodItem fooditem = FoodItem(iname: iname,
+        uname: uname,
+        aprice: aprice,
+        dprice: dprice,
+        sdate: sdate,
+        edate: edate,
+        useremail: useremail,
+        id: document.id,
+        imagename: imagename);
+
+
+
+        // FoodItem fooditem = FoodItem(iname: data['item_name'], uname: data['username'], aprice: data['actual_price'], dprice: data['discount_price'], sdate: data['submit_date'], edate: data['exp_date'], useremail: data['user_email'], imagename: data['imagename']==null? "":data['imagename']);
         DateTime expirationDate = DateTime.parse(fooditem.edate);
         final now = DateTime.now();
         final bool isExpired = expirationDate.isBefore(now);
@@ -79,37 +109,43 @@ class BasketListViewState  extends State<BasketListView>{
                 ),
               ),
               subtitle:
-              Text.rich(TextSpan(
-                children: <TextSpan>[
-                  new TextSpan(
-                    text: ' \$'+ fooditem.dprice +' ',
-                    style: new TextStyle(
-                      color: Colors.green, fontSize: 20.0,
+              GestureDetector(
+        onTap: ()
+        {
+        navigateToFoodItemPage(context, fooditem, widget.basketBloc, widget.useraccountname, widget.useraccount);
+        },
+                child: Text.rich(TextSpan(
+                  children: <TextSpan>[
+                    new TextSpan(
+                      text: ' \$'+ fooditem.dprice +' ',
+                      style: new TextStyle(
+                        color: Colors.green, fontSize: 20.0,
+                      ),
                     ),
-                  ),
-                  new TextSpan(
-                    text: '\$'+ fooditem.aprice,
-                    style: new TextStyle(
-                      color: Color(0xFF90D493),
-                      decoration: TextDecoration.lineThrough,
+                    new TextSpan(
+                      text: '\$'+ fooditem.aprice,
+                      style: new TextStyle(
+                        color: Color(0xFF90D493),
+                        decoration: TextDecoration.lineThrough,
+                      ),
                     ),
-                  ),
-                  isExpired? TextSpan(
-                    text: "\n Not available " ,
-                    style:  TextStyle(
-                        color: Colors.grey,fontSize: 15.0, height: 2.0
-                    ),
-                  ):
-                  TextSpan(
-                    text: "\n Expiring " + DateFormat("yMMMd").format(DateTime.parse(fooditem.edate)),
-                    style:  TextStyle(
-                        color: Colors.green, fontSize: 15.0, height: 2.0
-                      // decoration: TextDecoration.lineThrough,
-                    ),
-                  )
-                  ,
-                ],
-              ),
+                    isExpired? TextSpan(
+                      text: "\n Not available " ,
+                      style:  TextStyle(
+                          color: Colors.grey,fontSize: 15.0, height: 2.0
+                      ),
+                    ):
+                    TextSpan(
+                      text: "\n Expiring " + DateFormat("yMMMd").format(DateTime.parse(fooditem.edate)),
+                      style:  TextStyle(
+                          color: Colors.green, fontSize: 15.0, height: 2.0
+                        // decoration: TextDecoration.lineThrough,
+                      ),
+                    )
+                    ,
+                  ],
+                ),
+                ),
               ),
               isThreeLine: true,
               leading: fooditem.imagename==""?null:ConstrainedBox(

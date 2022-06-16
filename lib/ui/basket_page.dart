@@ -188,6 +188,8 @@ class BasketPageState extends State<BasketPage> {
                        basketItemsCountNotifier: basketItemsCountNotifier,
                        removeFromBasket: removeFromBasket,
                        useraccountname: useraccount.uname,
+                       basketBloc: this.basketBloc!,
+                       useraccount: useraccount,
                      )
                    ),
 

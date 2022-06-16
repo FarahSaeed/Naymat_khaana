@@ -71,9 +71,9 @@ void navigateToBasketPage(BuildContext context, String title, UserAccount userAc
 //   }));
 // }
 
-void navigateToFoodItemPage(BuildContext context, FoodItem foodItem, BasketBloc basketBloc, String useraccountname) {
+void navigateToFoodItemPage(BuildContext context, FoodItem foodItem, BasketBloc basketBloc, String useraccountname, UserAccount useraccount) {
   Navigator.push(context, MaterialPageRoute(builder: (context) {
-    return FoodItemsDescPageParent(title: 'Detail', foodItem: foodItem);
+    return FoodItemsDescPageParent(title: 'Detail', foodItem: foodItem, useraccount: useraccount);
   })).then(
           (context) {
         basketBloc.add(HomePageStartedEvent(uname: useraccountname));

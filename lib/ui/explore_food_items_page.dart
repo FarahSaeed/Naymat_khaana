@@ -308,6 +308,7 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
                     return
                       ExploreListView(
                       useraccountname: this.useraccount.uname,
+                      useraccount: this.useraccount,
                       exploreFoodItemsBloc: exploreFoodItemsBloc!,
                       basketBloc: basketBloc!,
                       foodItemList: foodItemsList,
@@ -329,7 +330,7 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
 
   void navigateToFoodItemPage(BuildContext context, FoodItem foodItem) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return FoodItemsDescPageParent(title: 'Detail', foodItem: foodItem);
+      return FoodItemsDescPageParent(title: 'Detail', foodItem: foodItem, useraccount: useraccount,);
     })).then(
             (context) {
           basketBloc!.add(HomePageStartedEvent(uname: useraccount.uname));

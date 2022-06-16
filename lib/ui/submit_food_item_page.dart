@@ -164,8 +164,6 @@ TextDetector? _textDetector;
     return scannedString;
   }
 
-
-
   @override
   void dispose() {
     super.dispose();

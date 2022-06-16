@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:naymat_khaana/app_classes/food_item.dart';
 import 'package:intl/intl.dart';
+import 'package:naymat_khaana/app_classes/user_account.dart';
 import 'package:naymat_khaana/blocs/basketBloc/basket_bloc.dart';
 import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_bloc.dart';
 import 'package:naymat_khaana/blocs/exploreFoodItemsBloc/explore_food_items_event.dart';
@@ -19,12 +20,15 @@ class ExploreListView extends StatefulWidget {
     required this.foodItemList,
     required this.exploreFoodItemsBloc,
     required this.basketBloc,
-    required this.useraccountname
+    required this.useraccountname,
+    required this.useraccount
   }) : super(key: key);
   List<FoodItem> foodItemList;
   ExploreFoodItemsBloc exploreFoodItemsBloc;
   BasketBloc basketBloc;
   String useraccountname;
+  UserAccount useraccount;
+
   CloudStorage cloudStorage = CloudStorage();
   // final FirebaseStorage storage = FirebaseStorage.instance;
   //
@@ -69,7 +73,7 @@ class ExploreListViewState  extends State<ExploreListView>{
             GestureDetector(
               onTap: ()
               {
-                navigateToFoodItemPage(context, fooditem, widget.basketBloc, widget.useraccountname);
+                navigateToFoodItemPage(context, fooditem, widget.basketBloc, widget.useraccountname, widget.useraccount);
               },
               child: Container(
                 child: Stack(

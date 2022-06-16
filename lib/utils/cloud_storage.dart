@@ -29,6 +29,21 @@ String durl = "";
     return durl;
   }
 
+
+  Future<List<String>> downloadallURL({required List<String> imagename}) async{
+    List<String> durl = [];
+    try{
+      for(int i=0; i< imagename.length; i++) {
+        String curr_imagename = imagename[i];
+        durl.add(await storage.ref('test/$curr_imagename').getDownloadURL());
+      }
+      return durl;
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+    return durl;
+  }
+
 Future<ListResult> listFiles() async{
   ListResult results = await storage.ref('test').listAll();
 

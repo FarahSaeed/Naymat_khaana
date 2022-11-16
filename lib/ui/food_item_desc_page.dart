@@ -161,7 +161,7 @@ class FoodItemsDescPageState extends State<FoodItemsDescPage> {
       appBar: AppBar(
         title: Text(this.title),
         // title: customSearchBar,
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         actions: [
           // IconButton(
           //   onPressed: () {

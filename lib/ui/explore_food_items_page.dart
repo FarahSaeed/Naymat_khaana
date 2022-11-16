@@ -133,7 +133,7 @@ class ExploreFoodItemsPageState extends State<ExploreFoodItemsPage> {
     return Scaffold(
       appBar: AppBar(
         title: customSearchBar,
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {

@@ -87,7 +87,7 @@ class BasketPageState extends State<BasketPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: customSearchBar,
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {

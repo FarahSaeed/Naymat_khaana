@@ -181,7 +181,8 @@ class SignupPageState extends State<SignupPage> {
                 SignupInputTextField(
                     labelText: 'Password',
                     errorText:  valid_pass,
-                    inputTextController: passwordController!
+                    inputTextController: passwordController!,
+                  isPassword: true
                 ),
               ),
               SignupButtonField(

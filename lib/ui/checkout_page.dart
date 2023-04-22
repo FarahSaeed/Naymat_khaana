@@ -205,7 +205,7 @@ class CheckoutPageState extends State<CheckoutPage>  {
                         valid_city = validate_city(cityController!.text);
                         valid_zipcode = validate_zipcode(zipcodeController!.text);
                         valid_phone = validate_phone(phoneController!.text);
-                        valid_email = validate_email(phoneController!.text);
+                        valid_email = validate_email(emailController!.text);
 
                         if (valid_address1 == null && valid_address2 == null && valid_city == null && valid_zipcode == null && valid_phone == null && valid_email == null){
                           String addressvalue = address1Controller!.text + "::"+address2Controller!.text + "::"+cityController!.text + "::"+stateValue! + "::"+zipcodeController!.text + "::"+countryValue! + "::"+phoneController!.text + "::"+emailController!.text;

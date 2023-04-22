@@ -11,11 +11,13 @@ class SignupInputTextField extends StatefulWidget {
     required this.labelText,
      this.errorText,
      this.inputTextController,
-    this.focusNode
+    this.focusNode,
+    this.isPassword = false
 
   }) : super(key: key);
 
   String labelText;
+  bool isPassword;
   String? errorText;
   FocusNode? focusNode;
   TextEditingController? inputTextController;
@@ -28,6 +30,7 @@ class SignupInputTextFieldState  extends State<SignupInputTextField>{
   @override
   Widget build(BuildContext context) {
     return TextField(
+      obscureText: (widget.isPassword)? true:false,
       textInputAction: TextInputAction.next,
       controller: widget.inputTextController,
       focusNode: widget.focusNode,

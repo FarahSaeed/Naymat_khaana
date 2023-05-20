@@ -14,13 +14,15 @@ class SubmitInputTextField extends StatefulWidget {
     this.focusNode,
     this.onSubmitted,
     this.onTap,
-    this.suffixIcon
+    this.suffixIcon,
+    this.hintText
   }) : super(key: key);
 
   String labelText;
   String? errorText;
   FocusNode? focusNode;
   Widget? suffixIcon;
+  String? hintText;
   TextEditingController? inputTextController;
   void Function(String)? onSubmitted;
   void Function()? onTap;
@@ -50,6 +52,7 @@ class SubmitInputTextFieldState  extends State<SubmitInputTextField>{
         //border: OutlineInputBorder(),
         labelText: widget.labelText,
         errorText: widget.errorText,
+        hintText: widget.hintText,
       ),
 
       onSubmitted: widget.onSubmitted,

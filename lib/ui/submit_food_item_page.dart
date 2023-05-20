@@ -104,6 +104,64 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
   FocusNode? _focusNodeDprice; // focus management dob
   FocusNode? _focusNodeAprice; // focus management dob
 
+  Future<String> recongnizeDate(String inputStr) async
+  {
+    String scannedString = "";
+    bool dateFound = false;
+    DateTime? originalFormat;
+    List<String> dateFormatsList =["MMddyy",'MM/dd/yyyy', 'MM-dd-yyyy',"MMM-yy","MMMM-yy","MMM-yyyy"] ;
+    final lines = inputStr.split('\n');
+
+    for(String line in lines){
+      List<String> lineStr = [line];
+      if (line.toLowerCase().contains('exp')){
+        lineStr = line.split(" ");
+      }
+      for (String strcandidate in lineStr) {
+        for (String format in dateFormatsList ) {
+          try {
+            originalFormat = DateFormat(format).parse(strcandidate);
+            dateFound = true;
+          } catch (e) {}
+          try{
+          if (!dateFound){
+            var re = RegExp(
+              r'^'
+              r'(?<month>[0-9]{1,2})'
+              // r'/'
+              r'(?<day>[0-9]{1,2})'
+              // r'/'
+              r'(?<year>[0-9]{1,2})'
+              r'$',
+            );
+            var match = re.firstMatch(strcandidate);
+            if (match == null) {
+              throw FormatException('Unrecognized date format');
+            }
+            dateFound = true;
+            originalFormat = DateTime(2000+
+              int.parse(match.namedGroup('year')!),
+              int.parse(match.namedGroup('month')!),
+              int.parse(match.namedGroup('day')!),
+            );
+          }
+          } catch (e) {}
+          if (dateFound) {
+            var outputFormat = DateFormat('yyyy-MM-dd');
+            var date2 = outputFormat.format(originalFormat!);
+            date2.toString();
+            scannedString = date2.toString();
+            break;
+          }
+        }
+        if (dateFound) break;
+      }
+      if (dateFound) break;
+    }
+
+    return scannedString;
+  }
+
   Future<String> recongnizeText(XFile imageXFile) async
   {
     //final inputImage = InputImage.fromFilePath(imageXFile.path);
@@ -114,6 +172,7 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
     bool dateFound = false;
     DateTime? originalFormat;
     List<String> dateFormatsList =["MMddyy",'MM/dd/yyyy', 'MM-dd-yyyy',"MMM-yyyy","MMM-yy","MMMM-yy"] ;
+
   //   for (TextBlock block in recognisedText.blocks){
   //     for (TextLine line in block.lines){
   //       // scannedString = scannedString+line.text+"\n";
@@ -471,23 +530,23 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
 //                         textAlign: TextAlign.center,),
 //                     ),
 //                   ),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.only(left: 30.0),
-                    child: TextButton(
-                      onPressed: () async {
-                        textresult = await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>  CameraScreen()),
-                        );
-                        inameController!.text='$textresult';
-                       ScaffoldMessenger.of(context)
-                             ..removeCurrentSnackBar()
-                             ..showSnackBar(SnackBar(content: Text('$textresult')));
-                      },
-                      child: const Text('Add product photo', style: TextStyle(fontSize: 17),),
-                    ),
-                  ),
+//                   Container(
+//                     alignment: Alignment.topLeft,
+//                     padding: EdgeInsets.only(left: 30.0),
+//                     child: TextButton(
+//                       onPressed: () async {
+//                         textresult = await Navigator.push(
+//                           context,
+//                           MaterialPageRoute(builder: (context) =>  CameraScreen()),
+//                         );
+//                         inameController!.text='$textresult';
+//                        ScaffoldMessenger.of(context)
+//                              ..removeCurrentSnackBar()
+//                              ..showSnackBar(SnackBar(content: Text('$textresult')));
+//                       },
+//                       child: const Text('Add product photo', style: TextStyle(fontSize: 17),),
+//                     ),
+//                   ),
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                   Container(
                     alignment: AlignmentDirectional.center,
@@ -496,6 +555,7 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
                     SubmitInputTextField(
                       labelText: 'Food item name',
                       errorText: valid_iname,
+                      hintText: 'Scan using camera icon',
                       inputTextController: inameController,
         suffixIcon: Row(
         mainAxisSize: MainAxisSize.min,
@@ -513,14 +573,15 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
             context,
             MaterialPageRoute(builder: (context) =>  CameraScreen()),
           );
-          inameController!.text='$textresult';
+          String inputStr = '$textresult';
+          final title_lines = inputStr.split('\n');
+          inameController!.text= title_lines[0]; //'$textresult';
           inameController!.text.replaceAll("\n", " ");
           ScaffoldMessenger.of(context)
             ..removeCurrentSnackBar()
             ..showSnackBar(SnackBar(content: Text('$textresult'))); //replace all newline chars with a space
         }
         ))])
-
                     ),
                   ),
 
@@ -530,6 +591,8 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
                     SubmitInputTextField(
                         labelText: 'Actual price',
                         errorText: valid_aprice,
+
+                        hintText: 'Enter actual price',
                         inputTextController: apriceController,
                         focusNode: _focusNodeAprice,
                         onSubmitted: (String str) {
@@ -581,7 +644,9 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
                     SubmitInputTextField(
                         labelText: 'Discount price',
                         errorText: valid_dprice,
+                        hintText: 'Enter discount price',
                         inputTextController: dpriceController,
+
                         focusNode: _focusNodeDprice,
                         onSubmitted: (String str) {
 
@@ -634,6 +699,7 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
                     SubmitInputTextField(
                       labelText: 'Submission date',
                       errorText: valid_sdate,
+                      hintText: 'Enter the submission date',
                       inputTextController: sdateController,
 
                       onTap: () async {
@@ -648,120 +714,164 @@ class SubmitFoodItemPageState extends State<SubmitFoodItemPage> with WidgetsBind
                     ),
                   ),
 
-                  Container(
-                    margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
-                    child:
+        Container(
+        margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
+        child:
 
-                    SubmitInputTextField(
-                      labelText: 'Expiraiton date',
-                      errorText: valid_edate,
-                      inputTextController: edateController,
-                      suffixIcon: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              margin: const EdgeInsets.only( left: 5.0, right: 5.0),
-                              child: GestureDetector(
-                                  child:Icon(Icons.camera_alt),
-                                  onTap: () async {
-                                    ImagePicker picker = ImagePicker();
-                                    var source = ImageSource.camera;
-                                    XFile? sdateImage = await picker.pickImage(
-                                        source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
-                                    setState(() async {
-                                      // Fi_image = File(sdateImage!.path);
-                                      // scannedText= recongnizeText(sdateImage!) as String;
-                                      edateController!.text = await recongnizeText(sdateImage!);
-                                      //edateController!.text = sdateController!.text;
-                                    });
-                                    setState(() {});
-                                  }
-                                // (){
-                                // showDialog<String>(
-                                //   context: context,
-                                //   builder: (BuildContext context) => AlertDialog(
-                                //     title: const Text('Invalid price'),
-                                //     content: const Text('Actual price should be higher than discounted price.'),
-                                //     actions: <Widget>[
-                                //       TextButton(
-                                //         onPressed: ()
-                                //         {
-                                //           Navigator.pop(context, 'Update Actual price');
-                                //         },
-                                //         child: const Text('Update Actual price'),
-                                //       ),
-                                //       TextButton(
-                                //         onPressed: (){
-                                //           Navigator.pop(context, 'Update Discounted price');
-                                //         },
-                                //         child: const Text('Update Discounted price'),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // );
-                                // },
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(left: 5.0, right: 10.0),
-                              child: GestureDetector(
-                                  child:Icon(Icons.image),
-                                  onTap: () async {
-                                    ImagePicker picker = ImagePicker();
-                                    var source = ImageSource.gallery;
-                                    XFile? sdateImage = await picker.pickImage(
-                                        source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
-                                    setState(() async {
-                                      // Fi_image = File(sdateImage!.path);
-                                      // scannedText= recongnizeText(sdateImage!) as String;
-                                      edateController!.text = await recongnizeText(sdateImage!);
-                                      //edateController!.text = sdateController!.text;
-                                    });
-                                    setState(() {});
-                                  }
-                                // (){
-                                // showDialog<String>(
-                                //   context: context,
-                                //   builder: (BuildContext context) => AlertDialog(
-                                //     title: const Text('Invalid price'),
-                                //     content: const Text('Actual price should be higher than discounted price.'),
-                                //     actions: <Widget>[
-                                //       TextButton(
-                                //         onPressed: ()
-                                //         {
-                                //           Navigator.pop(context, 'Update Actual price');
-                                //         },
-                                //         child: const Text('Update Actual price'),
-                                //       ),
-                                //       TextButton(
-                                //         onPressed: (){
-                                //           Navigator.pop(context, 'Update Discounted price');
-                                //         },
-                                //         child: const Text('Update Discounted price'),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // );
-                                // },
-                              ),
-                            ),
-
-                          ]
-                      ),
+        SubmitInputTextField(
+        labelText: 'Expiraiton date',
+        errorText: valid_edate,
+        hintText: 'Scan using camera icon',
+        inputTextController: edateController,
+            suffixIcon: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                  margin: const EdgeInsets.only( left: 5.0, right: 5.0),
+                  child: GestureDetector(
+                      child:Icon(Icons.camera_alt),
                       onTap: () async {
-                        DateTime? picked = (await showDatePicker(
-                            helpText: "Expiration date",
-                            context: context,
-                            initialDate: sdateController!.text == ""? selectedDate:DateTime.parse(sdateController!.text) ,
-                            firstDate: sdateController!.text == ""?selectedDate:DateTime.parse(sdateController!.text), //DateTime(1900, 8),
-                            lastDate: DateTime(2101)));
-                        edateController!.text = (picked == null)?"":"${picked.toLocal()}".split(' ')[0];
-                      },
-                    ),
+                        textresult = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  CameraScreen()),
+                        );
+                        edateController!.text='$textresult';
+                        edateController!.text.replaceAll("\n", " ");
+                        edateController!.text = await recongnizeDate(edateController!.text!);
+                        ScaffoldMessenger.of(context)
+                          ..removeCurrentSnackBar()
+                        ..showSnackBar(SnackBar(content: Text(edateController!.text))); //replace all newline chars with a space
 
-                  ),
+                        // ..showSnackBar(SnackBar(content: Text('$textresult'))); //replace all newline chars with a space
+                      }
+                  ))]),
+            onTap: () async {
+        DateTime? picked = (await showDatePicker(
+        helpText: "Expiration date",
+        context: context,
+        initialDate: sdateController!.text == ""? selectedDate:DateTime.parse(sdateController!.text) ,
+        firstDate: sdateController!.text == ""?selectedDate:DateTime.parse(sdateController!.text), //DateTime(1900, 8),
+        lastDate: DateTime(2101)));
+        edateController!.text = (picked == null)?"":"${picked.toLocal()}".split(' ')[0];
+        },
+        )),
+
+                  // Container(
+                  //   margin: const EdgeInsets.only(top: 10.0, bottom: 6.0, left: 20.0, right: 20.0),
+                  //   child:
+                  //
+                  //   SubmitInputTextField(
+                  //     labelText: 'Expiraiton date',
+                  //     errorText: valid_edate,
+                  //     inputTextController: edateController,
+                  //     suffixIcon: Row(
+                  //         mainAxisSize: MainAxisSize.min,
+                  //         mainAxisAlignment: MainAxisAlignment.end,
+                  //         crossAxisAlignment: CrossAxisAlignment.center,
+                  //         children: <Widget>[
+                  //           Container(
+                  //             margin: const EdgeInsets.only( left: 5.0, right: 5.0),
+                  //             child: GestureDetector(
+                  //                 child:Icon(Icons.camera_alt),
+                  //                 onTap: () async {
+                  //                   ImagePicker picker = ImagePicker();
+                  //                   var source = ImageSource.camera;
+                  //                   XFile? sdateImage = await picker.pickImage(
+                  //                       source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                  //                   setState(() async {
+                  //                     // Fi_image = File(sdateImage!.path);
+                  //                     // scannedText= recongnizeText(sdateImage!) as String;
+                  //                     edateController!.text = await recongnizeText(sdateImage!);
+                  //                     //edateController!.text = sdateController!.text;
+                  //                   });
+                  //                   setState(() {});
+                  //                 }
+                  //               // (){
+                  //               // showDialog<String>(
+                  //               //   context: context,
+                  //               //   builder: (BuildContext context) => AlertDialog(
+                  //               //     title: const Text('Invalid price'),
+                  //               //     content: const Text('Actual price should be higher than discounted price.'),
+                  //               //     actions: <Widget>[
+                  //               //       TextButton(
+                  //               //         onPressed: ()
+                  //               //         {
+                  //               //           Navigator.pop(context, 'Update Actual price');
+                  //               //         },
+                  //               //         child: const Text('Update Actual price'),
+                  //               //       ),
+                  //               //       TextButton(
+                  //               //         onPressed: (){
+                  //               //           Navigator.pop(context, 'Update Discounted price');
+                  //               //         },
+                  //               //         child: const Text('Update Discounted price'),
+                  //               //       ),
+                  //               //     ],
+                  //               //   ),
+                  //               // );
+                  //               // },
+                  //             ),
+                  //           ),
+                  //           Container(
+                  //             margin: const EdgeInsets.only(left: 5.0, right: 10.0),
+                  //             child: GestureDetector(
+                  //                 child:Icon(Icons.image),
+                  //                 onTap: () async {
+                  //                   ImagePicker picker = ImagePicker();
+                  //                   var source = ImageSource.gallery;
+                  //                   XFile? sdateImage = await picker.pickImage(
+                  //                       source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                  //                   setState(() async {
+                  //                     // Fi_image = File(sdateImage!.path);
+                  //                     // scannedText= recongnizeText(sdateImage!) as String;
+                  //                     edateController!.text = await recongnizeText(sdateImage!);
+                  //                     //edateController!.text = sdateController!.text;
+                  //                   });
+                  //                   setState(() {});
+                  //                 }
+                  //               // (){
+                  //               // showDialog<String>(
+                  //               //   context: context,
+                  //               //   builder: (BuildContext context) => AlertDialog(
+                  //               //     title: const Text('Invalid price'),
+                  //               //     content: const Text('Actual price should be higher than discounted price.'),
+                  //               //     actions: <Widget>[
+                  //               //       TextButton(
+                  //               //         onPressed: ()
+                  //               //         {
+                  //               //           Navigator.pop(context, 'Update Actual price');
+                  //               //         },
+                  //               //         child: const Text('Update Actual price'),
+                  //               //       ),
+                  //               //       TextButton(
+                  //               //         onPressed: (){
+                  //               //           Navigator.pop(context, 'Update Discounted price');
+                  //               //         },
+                  //               //         child: const Text('Update Discounted price'),
+                  //               //       ),
+                  //               //     ],
+                  //               //   ),
+                  //               // );
+                  //               // },
+                  //             ),
+                  //           ),
+                  //
+                  //         ]
+                  //     ),
+                  //     onTap: () async {
+                  //       DateTime? picked = (await showDatePicker(
+                  //           helpText: "Expiration date",
+                  //           context: context,
+                  //           initialDate: sdateController!.text == ""? selectedDate:DateTime.parse(sdateController!.text) ,
+                  //           firstDate: sdateController!.text == ""?selectedDate:DateTime.parse(sdateController!.text), //DateTime(1900, 8),
+                  //           lastDate: DateTime(2101)));
+                  //       edateController!.text = (picked == null)?"":"${picked.toLocal()}".split(' ')[0];
+                  //     },
+                  //   ),
+                  //
+                  // ),
                   Container(
                     alignment: Alignment.topLeft,
                     padding: EdgeInsets.only(left: 30.0),
